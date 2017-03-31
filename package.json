@@ -4,5 +4,9 @@
   "main": "index.js",
   "repository": "https://github.com/grodno-city/alis-web-request.git",
   "author": "Demyanchik Vadim <vadim.demyanchik@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "request": "^2.81.0"
+  }
 }
