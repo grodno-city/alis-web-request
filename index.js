@@ -1,11 +1,18 @@
 const cheerio = require('cheerio');
-const request = require('request').defaults({ jar: true });
+const request = require('request');
+
+const j = request.jar();
+
+j.setCookie(
+  request.cookie('sessionalis=value'),
+  'http://86.57.174.45/pls/alis/StartEK/index.php'
+);
 
 const books = [];
 
 function sendInitialQuery(query, callback) {
   const START_URL = `http://86.57.174.45/alis/EK/do_searh.php?radiodate=simple&valueINP=${query}&tema=ALL&tag=ALL`;
-  request(START_URL, (err, response, body) => {
+  request({ url: START_URL, jar: j }, (err, response, body) => {
     if (err) {
       callback(err);
       return;
