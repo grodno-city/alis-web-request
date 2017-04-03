@@ -4,8 +4,7 @@ function sendInitialQuery(query, callback) {
   const START_URL = `http://${query.ip}/alis/EK/do_searh.php?radiodate=simple&valueINP=${query.year}&tema=1&tag=6`;
   const j = request.jar();
   j.setCookie(
-    request.cookie(`sessionalis=${query.cookieId}`),
-    'http://86.57.174.45/pls/alis/StartEK/index.php'
+    START_URL
   );
   request({ url: START_URL, jar: j }, (err, response, body) => {
     if (err) {
