@@ -1,11 +1,11 @@
-const sendInitialQuery = require('./index');
+const AlisWebRequest = require('./index');
 
-function handleInitialQuery(err, body) {
+function handleInitialQuery(err, options) {
   if (err) {
     console.log(err);
     return;
   }
-  console.log(body);
+  AlisWebRequest.getPage(options);
 }
 
 const initialParameters = {
@@ -13,4 +13,4 @@ const initialParameters = {
   ip: '86.57.174.45',
 };
 
-sendInitialQuery(initialParameters, handleInitialQuery);
+AlisWebRequest.sendInitialQuery(initialParameters, handleInitialQuery);

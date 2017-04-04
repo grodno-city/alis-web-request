@@ -6,17 +6,18 @@ function sendInitialQuery(query, callback) {
   j.setCookie(
     START_URL
   );
-  request({ url: START_URL, jar: j }, (err, response, body) => {
+  request({ url: START_URL, jar: j }, (err, response, html) => {
     if (err) {
       callback(err);
       return;
     }
-    callback(null, { page: body, jar: j });
+    console.log(html);
+    callback(null, { page: html, jar: j });
   });
 }
 
-function getPage(query, callback) {
-  request({ url: query.url, jar: query.jar }, (err, response, body) => {
+function getPage(options, callback) {
+  request({ url: options.url, jar: options.jar }, (err, response, body) => {
     if (err) {
       callback(err);
       return;
@@ -25,4 +26,7 @@ function getPage(query, callback) {
   });
 }
 
-module.exports = sendInitialQuery;
+module.exports = {
+  sendInitialQuery,
+  getPage,
+};
