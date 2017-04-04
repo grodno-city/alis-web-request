@@ -3,15 +3,11 @@ const request = require('request');
 function sendInitialQuery(query, callback) {
   const START_URL = `http://${query.ip}/alis/EK/do_searh.php?radiodate=simple&valueINP=${query.year}&tema=1&tag=6`;
   const j = request.jar();
-  j.setCookie(
-    START_URL
-  );
   request({ url: START_URL, jar: j }, (err, response, html) => {
     if (err) {
       callback(err);
       return;
     }
-    console.log(html);
     callback(null, { page: html, jar: j });
   });
 }
