@@ -1,6 +1,6 @@
 const request = require('request');
 
-export function sendInitialQuery(query, callback) {
+function sendInitialQuery(query, callback) {
   if (!query.year) {
     const err = `Error: query.year is not provided`;
     callback(err);
@@ -17,7 +17,7 @@ export function sendInitialQuery(query, callback) {
 });
 }
 
-export function getPage(options, callback) {
+function getPage(options, callback) {
   request({ url: options.url, jar: options.jar }, (err, response, body) => {
     if (err) {
       callback(err);
@@ -26,3 +26,8 @@ export function getPage(options, callback) {
     callback(null, body);
 });
 }
+
+module.exports = {
+  sendInitialQuery,
+  getPage,
+};
