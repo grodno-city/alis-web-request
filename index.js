@@ -27,7 +27,31 @@ function getPage(options, callback) {
 });
 }
 
+function getNumberedPageUrls(page) {
+  const $ = cheerio.load(page);
+  const firstTenPageLinks = $('a[href^=\'do_other\']');
+  const firstTenPageUrls = $(firstTenPageLinks).map((i, link) => `http://86.57.174.45/alis/EK/${$(link).attr('href')}`).toArray();
+  return firstTenPageUrls;
+}
+
+function getNextPageUrl(page) {
+  const pageLink = page('#Agt');
+  const pageUrl = (`${page(pageLink).attr('href')}`);
+  return pageUrl;
+}
+
+function getBooks(page) {
+  const books = [];
+  page('.article').each(function () {
+    books.push(page(this).text());
+  });
+  return books;
+}
+
 module.exports = {
   sendInitialQuery,
   getPage,
+  getNumberedPageUrls,
+  getNextPageUrl,
+  getBooks
 };
