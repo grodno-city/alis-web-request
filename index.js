@@ -3,7 +3,7 @@ const request = require('request');
 export function sendInitialQuery(query, callback) {
   if (!query.year) {
     return process.nextTick(callback,
-      new TypeError('query.year is not provided'));
+      new Error('query.year is not provided'));
   }
   const j = request.jar();
   const START_URL = `http://${query.ip}/alis/EK/do_searh.php?radiodate=simple&valueINP=${query.year}&tema=1&tag=6`;
