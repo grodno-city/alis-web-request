@@ -1,8 +1,16 @@
 {
   "name": "alis-web-request",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "index.js",
   "repository": "https://github.com/grodno-city/alis-web-request.git",
   "author": "Vadim Demyanchik <vadim.demyanchik@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "request": "2.81.0"
+  },
+  "devDependencies": {
+    "babel-cli": "6.24.0",
+    "babel-preset-es2015": "6.24.0",
+    "nodemon": "1.11.0"
+  }
 }
