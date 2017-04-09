@@ -1,5 +1,9 @@
 import request from 'request';
 import cheerio from 'cheerio';
+import Stream from 'stream';
+
+export const ReadableStreamBooks = new Stream.Readable();
+ReadableStreamBooks._read = () => {};
 
 export function sendInitialQuery(query, callback) {
   if (!query.year) {
