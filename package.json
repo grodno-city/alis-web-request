@@ -1,7 +1,7 @@
 {
   "name": "@grodno-city/alis-web-request",
   "version": "0.0.1",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "repository": "https://github.com/grodno-city/alis-web-request.git",
   "author": "Vadim Demyanchik <vadim.demyanchik@gmail.com>",
   "license": "MIT",
