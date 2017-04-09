@@ -1,4 +1,5 @@
 import request from 'request';
+import cheerio from 'cheerio';
 
 export function sendInitialQuery(query, callback) {
   if (!query.year) {
@@ -22,4 +23,23 @@ export function getPage(url, jug, callback) {
     }
     callback(null, body);
   });
+}
+
+export function getNextPageUrl($) {
+  const pageLink = $('#Agt');
+  const pageUrl = (`${$(pageLink).attr('href')}`);
+  return pageUrl;
+}
+
+export function getBooks($) {
+  return $('.article').each(function () {
+    ReadableStreamBooks.push($(this).text());
+  });
+}
+
+export function getNumberedPageUrls(page, ip) {
+  const $ = cheerio.load(page);
+  const firstTenPageLinks = $('a[href^=\'do_other\']');
+  const firstTenPageUrls = $(firstTenPageLinks).map((i, link) => `http://${ip}/alis/EK/${$(link).attr('href')}`).toArray();
+  return firstTenPageUrls;
 }
