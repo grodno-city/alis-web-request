@@ -43,3 +43,25 @@ export function getNumberedPageUrls(page, ip) {
   const firstTenPageUrls = $(firstTenPageLinks).map((i, link) => `http://${ip}/alis/EK/${$(link).attr('href')}`).toArray();
   return firstTenPageUrls;
 }
+
+export function run(fn, q, ip, jar) {
+  if (q.length === 0) {
+    return ReadableStreamBooks.push(null);
+  }
+  fn(q[0], jar, (err, page) => {
+    if (err) {
+      return err;
+    }
+    const $ = cheerio.load(page);
+    getBooks($);
+    const nextPageUrl = getNextPageUrl($);
+    if (nextPageUrl === 'undefined') {
+      return ReadableStreamBooks.push(null);
+    }
+    const remainingQueue = q.slice(1);
+    if (q.length === 1) {
+      remainingQueue.push(`http://${ip}/alis/EK/${nextPageUrl}`);
+    }
+    run(fn, remainingQueue, ip, jar);
+  });
+}
