@@ -18,8 +18,8 @@ export function sendInitialQuery(query, callback) {
   });
 }
 
-export function getPage(url, jug, callback) {
-  request({ url, jar: jug }, (err, response, body) => {
+export function getPage(options, callback) {
+  request({ url: options.url, jar: options.jar }, (err, response, body) => {
     if (err) {
       return callback(err);
     }
@@ -29,41 +29,54 @@ export function getPage(url, jug, callback) {
 
 export function getNextPageUrl($) {
   const pageLink = $('#Agt');
-  const pageUrl = (`${$(pageLink).attr('href')}`);
+  const pageUrl = $(pageLink).attr('href');
   return pageUrl;
 }
 
 export function getBooks($) {
   return $('.article').each(function () {
-   books.push($(this).text());
+    books.push($(this).text());
   });
 }
 
-export function getNumberedPageUrls(page, ip) {
-  const $ = cheerio.load(page);
-  const firstTenPageLinks = $('a[href^=\'do_other\']');
-  const firstTenPageUrls = $(firstTenPageLinks).map((i, link) => `http://${ip}/alis/EK/${$(link).attr('href')}`).toArray();
-  return firstTenPageUrls;
+export function getNumberedPageUrls($, ip) {
+  const relativePageUrls = $('a[href^=\'do_other\']');
+  const absolutePageUrls = $(relativePageUrls).map((i, link) => `http://${ip}/alis/EK/${$(link).attr('href')}`).toArray();
+  return absolutePageUrls;
 }
 
-export function run(fn, q, ip, jar) {
-  if (q.length === 0) {
-    return;
+export function parsePage(body) {
+  const $ = cheerio.load(body);
+  return $;
+}
+
+export function processBooks(options, callback) {
+  if (!options) {
+    return process.nextTick(callback, new Error('options is not provided'));
   }
-  fn(q[0], jar, (err, page) => {
+  getPage({ url: options.url, jar: options.jar }, (err, body) => {
+    const $ = parsePage(body);
+    getBooks($);
+    const nextPageUrl = getNextPageUrl($);
+    callback(null, nextPageUrl);
+  });
+}
+
+export function run(fn, q, options) {
+  if (!q) {
+    return new Error('q is not provided');
+  }
+  fn({ url: q[0], jar: options.jar }, (err, nextPageUrl) => {
     if (err) {
       return err;
     }
-    const $ = cheerio.load(page);
-    getBooks($);
-    const nextPageUrl = getNextPageUrl($);
-    if (nextPageUrl === 'undefined') {
+    const remainingQueue = q.slice(1);
+    if (nextPageUrl === undefined) {
       return;
     }
-    const remainingQueue = q.slice(1);
     if (q.length === 1) {
-      remainingQueue.push(`http://${ip}/alis/EK/${nextPageUrl}`);
+      remainingQueue.push(`http://${options.ip}/alis/EK/${nextPageUrl}`);
     }
-    run(fn, remainingQueue, ip, jar);
+    run(fn, remainingQueue, options);
   });
 }
