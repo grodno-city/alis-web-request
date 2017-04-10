@@ -1,9 +1,7 @@
 import request from 'request';
 import cheerio from 'cheerio';
-import Stream from 'stream';
 
-export const ReadableStreamBooks = new Stream.Readable();
-ReadableStreamBooks._read = () => {};
+const books = [];
 
 export function sendInitialQuery(query, callback) {
   if (!query.year) {
@@ -37,7 +35,7 @@ export function getNextPageUrl($) {
 
 export function getBooks($) {
   return $('.article').each(function () {
-    ReadableStreamBooks.push($(this).text());
+   books.push($(this).text());
   });
 }
 
@@ -50,7 +48,7 @@ export function getNumberedPageUrls(page, ip) {
 
 export function run(fn, q, ip, jar) {
   if (q.length === 0) {
-    return ReadableStreamBooks.push(null);
+    return;
   }
   fn(q[0], jar, (err, page) => {
     if (err) {
@@ -60,7 +58,7 @@ export function run(fn, q, ip, jar) {
     getBooks($);
     const nextPageUrl = getNextPageUrl($);
     if (nextPageUrl === 'undefined') {
-      return ReadableStreamBooks.push(null);
+      return;
     }
     const remainingQueue = q.slice(1);
     if (q.length === 1) {
