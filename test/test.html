@@ -1,13 +1,210 @@
 <html>
 <head>
-    <title>test</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Listsearch5_2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <SCRIPT LANGUAGE="JavaScript1.1" SRC="/alis/JavaScript/ek.js"></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript1.1" SRC="/alis/JavaScript/ekorderuser.js"></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript1.1" SRC="/alis/JavaScript/ekwindows.js"></SCRIPT>
+    <link rel="stylesheet" type="text/css" href="/alis/dhtmlxSuite\dhtmlxWindows\codebase\dhtmlxwindows.css">
+    <link rel="stylesheet" type="text/css" href="/alis/dhtmlxSuite\dhtmlxWindows\codebase\skins\dhtmlxwindows_dhx_skyblue.css ">
+    <script src="/alis/dhtmlxSuite\dhtmlxWindows\codebase\dhtmlxcommon.js"></script>
+    <script src="/alis/dhtmlxSuite\dhtmlxWindows\codebase\dhtmlxcontainer.js"></script>
+    <script src="/alis/dhtmlxSuite\dhtmlxWindows\codebase\dhtmlxwindows.js"></script><link rel="stylesheet" href="/alis/css_files/img.css" type="text/css" />
 </head>
 <body>
-<a id=A1 name=A1 href="do_other.php?frow=1&fcheck=1&ccheck=1&action=1&crow=1">1</a>
-<a id=A2 name=A3 href="do_other.php?frow=1&fcheck=1&ccheck=1&action=1&crow=1">2</a>
-<a id=Agt NAME=Agt href="do_other.php?frow=1&fcheck=1&ccheck=1&crow=1&action=10">10</a>
-<div class=article> Методические рекомендации.</div>
-<div class=article> Методические рекомендации.</div>
-</body>
-</html>
+<div id="listObj" style="width: 500px;  height: 0px; overflow:auto"></div>
+<DIV class="listbzstat" align=left>Запрос: <strong>2016&nbsp;</strong>Найдено&nbsp;2665&nbsp;зап.&nbsp;
+</DIV>
+<DIV class="listbzstat" align=center>Страницы:  <A ID=A1 NAME=A1 href="do_other.php?frow=1&fcheck=1
+&ccheck=1&action=1&crow=1" onmouseout="window.status=''; return true;"
+                                                   onmouseover="window.status='Записи с 1 по 20'; return true;">
+    <B>1</B></A>&nbsp;|&nbsp; <A ID=A2 NAME=A2 href="do_other.php?frow=1&fcheck=1
+&ccheck=1&action=2&crow=1" onmouseout="window.status=''; return true;"
+                                 onmouseover="window.status='Записи с 21 по 40'; return true;">
+
+    <DIV align=center>
+        <TABLE border=0 cellPadding=2 cellSpacing=2 width="95%">
+            <TBODY  id="aAccount" name="aAccount" >
+            <TR class="listbzth">
+                <TH width="25">№</TH>
+                <TH>Название</TH>
+                <TH>&nbsp;</TH><TH>&nbsp;</TH><TH>&nbsp;</TH></TR>
+            <TR ID=S87714390 NAME=S87714390 class="listbztr" ><TD ID=A87714390 NAME=A87714390 align=center noWrap><b>1</b></TD>
+                <A href="javascript:void(0);" onclick="objClickWiev(87714390); return false;"
+                   onmouseout="window.status='';" onmouseover="window.status='показать запись № 1'; return true;">
+                    <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87714390 valign=top><A href="javascript:void(0);" onclick="objClickSele(87714390);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 1'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87714394 NAME=S87714394 class="listbztr" ><TD ID=A87714394 NAME=A87714394 align=center noWrap><b>2</b></TD>
+                <A href="javascript:void(0);" onclick="objClickWiev(87714394); return false;"
+                   onmouseout="window.status='';" onmouseover="window.status='показать запись № 2'; return true;">
+                    <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87714394 valign=top><A href="javascript:void(0);" onclick="objClickSele(87714394);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 2'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87717347 NAME=S87717347 class="listbztr" ><TD ID=A87717347 NAME=A87717347 align=center noWrap><b>3</b></TD>
+                <A href="javascript:void(0);" onclick="objClickWiev(87717347); return false;"
+                   onmouseout="window.status='';" onmouseover="window.status='показать запись № 3'; return true;">
+                    <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87717347 valign=top><A href="javascript:void(0);" onclick="objClickSele(87717347);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 3'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87717356 NAME=S87717356 class="listbztr" ><TD ID=A87717356 NAME=A87717356 align=center noWrap><b>4</b></TD>
+                <A href="javascript:void(0);" onclick="objClickWiev(87717356); return false;"
+                   onmouseout="window.status='';" onmouseover="window.status='показать запись № 4'; return true;">
+                    <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87717356 valign=top><A href="javascript:void(0);" onclick="objClickSele(87717356);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 4'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87730490 NAME=S87730490 class="listbztr" ><TD ID=A87730490 NAME=A87730490 align=center noWrap><b>5</b></TD>
+                <A href="javascript:void(0);" onclick="objClickWiev(87730490); return false;"
+                   onmouseout="window.status='';" onmouseover="window.status='показать запись № 5'; return true;">
+                    <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87730490 valign=top><A href="javascript:void(0);" onclick="objClickSele(87730490);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 5'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87721411 NAME=S87721411 class="listbztr" ><TD ID=A87721411 NAME=A87721411 align=center noWrap><b>6</b></TD>
+                <A href="javascript:void(0);" onclick="objClickWiev(87721411); return false;"
+                   onmouseout="window.status='';" onmouseover="window.status='показать запись № 6'; return true;">
+                    <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87721411 valign=top><A href="javascript:void(0);" onclick="objClickSele(87721411);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 6'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87721414 NAME=S87721414 class="listbztr" ><TD ID=A87721414 NAME=A87721414 align=center noWrap><b>7</b></TD>
+                <A href="javascript:void(0);" onclick="objClickWiev(87721414); return false;"
+                   onmouseout="window.status='';" onmouseover="window.status='показать запись № 7'; return true;">
+                    <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87721414 valign=top><A href="javascript:void(0);" onclick="objClickSele(87721414);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 7'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87721435 NAME=S87721435 class="listbztr" ><TD ID=A87721435 NAME=A87721435 align=center noWrap><b>8</b></TD>
+                <A href="javascript:void(0);" onclick="objClickWiev(87721435); return false;"
+                   onmouseout="window.status='';" onmouseover="window.status='показать запись № 8'; return true;">
+                    <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87721435 valign=top><A href="javascript:void(0);" onclick="objClickSele(87721435);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 8'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87721947 NAME=S87721947 class="listbztr" ><TD ID=A87721947 NAME=A87721947 align=center noWrap><b>9</b></TD>
+                <A href="javascript:void(0);" onclick="objClickWiev(87721947); return false;"
+                   onmouseout="window.status='';" onmouseover="window.status='показать запись № 9'; return true;">
+                    <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87721947 valign=top><A href="javascript:void(0);" onclick="objClickSele(87721947);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 9'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87721963 NAME=S87721963 class="listbztr" ><TD ID=A87721963 NAME=A87721963 align=center noWrap><b>10</b></TD>
+                <A href="javascript:void(0);" onclick="objClickWiev(87721963); return false;"
+                   onmouseout="window.status='';" onmouseover="window.status='показать запись № 10'; return true;">
+                    <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87721963 valign=top><A href="javascript:void(0);" onclick="objClickSele(87721963);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 10'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87723123 NAME=S87723123 class="listbztr" ><TD ID=A87723123 NAME=A87723123 align=center noWrap><b>11</b></TD>
+                <A href="javascript:void(0);" onclick="objClickWiev(87723123); return false;"
+                   onmouseout="window.status='';" onmouseover="window.status='показать запись № 11'; return true;">
+                    <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87723123 valign=top><A href="javascript:void(0);" onclick="objClickSele(87723123);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 11'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87725693 NAME=S87725693 class="listbztr" ><TD ID=A87725693 NAME=A87725693 align=center noWrap><b>12</b></TD>
+                <A href="javascript:void(0);" onclick="objClickWiev(87725693); return false;"
+                   onmouseout="window.status='';" onmouseover="window.status='показать запись № 12'; return true;">
+                    <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87725693 valign=top><A href="javascript:void(0);" onclick="objClickSele(87725693);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 12'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87730483 NAME=S87730483 class="listbztr" ><TD ID=A87730483 NAME=A87730483 align=center noWrap><b>13</b></TD>
+                <A href="javascript:void(0);" onclick="objClickWiev(87730483); return false;"
+                   onmouseout="window.status='';" onmouseover="window.status='показать запись № 13'; return true;">
+                    <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87730483 valign=top><A href="javascript:void(0);" onclick="objClickSele(87730483);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 13'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87730827 NAME=S87730827 class="listbztr" ><TD ID=A87730827 NAME=A87730827 align=center noWrap><b>14</b></TD>
+                <A href="javascript:void(0);" onclick="objClickWiev(87730827); return false;"
+                   onmouseout="window.status='';" onmouseover="window.status='показать запись № 14'; return true;">
+                    <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87730827 valign=top><A href="javascript:void(0);" onclick="objClickSele(87730827);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 14'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87730455 NAME=S87730455 class="listbztr" ><TD ID=A87730455 NAME=A87730455 align=center noWrap><b>15</b></TD>
+                <A href="javascript:void(0);" onclick="objClickWiev(87730455); return false;"
+                   onmouseout="window.status='';" onmouseover="window.status='показать запись № 15'; return true;">
+                    <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87730455 valign=top><A href="javascript:void(0);" onclick="objClickSele(87730455);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 15'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87730470 NAME=S87730470 class="listbztr" ><TD ID=A87730470 NAME=A87730470 align=center noWrap><b>16</b></TD>
+                <A href="javascript:void(0);" onclick="objClickWiev(87730470); return false;"
+                   onmouseout="window.status='';" onmouseover="window.status='показать запись № 16'; return true;">
+                    <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87730470 valign=top><A href="javascript:void(0);" onclick="objClickSele(87730470);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 16'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87714768 NAME=S87714768 class="listbztr" ><TD ID=A87714768 NAME=A87714768 align=center noWrap><b>17</b></TD>
+                <A href="javascript:void(0);" onclick="objClickWiev(87714768); return false;"
+                   onmouseout="window.status='';" onmouseover="window.status='показать запись № 17'; return true;">
+                    <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87714768 valign=top><A href="javascript:void(0);" onclick="objClickSele(87714768);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 17'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87725199 NAME=S87725199 class="listbztr" ><TD ID=A87725199 NAME=A87725199 align=center noWrap><b>18</b></TD>
+                : [сборник / читают: В. Пигаев, Л. Поволоцкая, О. Мартьянов]. - Москва : Аудиокнига, 2016. - 1 диск (6 часов 30 мин) ББК 84(0)&nbsp;</TD><TD ID=U87725199 NAME=U87725199 valign=top noWrap>
+                    <A href="javascript:void(0);" onclick="objClickWiev(87725199); return false;"
+                       onmouseout="window.status='';" onmouseover="window.status='показать запись № 18'; return true;">
+                        <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87725199 valign=top><A href="javascript:void(0);" onclick="objClickSele(87725199);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 18'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87725143 NAME=S87725143 class="listbztr" ><TD ID=A87725143 NAME=A87725143 align=center noWrap><b>19</b></TD>
+                : для начинающих, которые не владеют английским языком / [читает А. Лазарева]. - Москва : Аудиокнига, 2016. - 1 диск (1 час). - (Просто и ясно). - (Реальный самоучитель) ББК 81.432.1-92&nbsp;</TD><TD ID=U87725143 NAME=U87725143 valign=top noWrap>
+                    <A href="javascript:void(0);" onclick="objClickWiev(87725143); return false;"
+                       onmouseout="window.status='';" onmouseover="window.status='показать запись № 19'; return true;">
+                        <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87725143 valign=top><A href="javascript:void(0);" onclick="objClickSele(87725143);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 19'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR><TR ID=S87722770 NAME=S87722770 class="listbztr" ><TD ID=A87722770 NAME=A87722770 align=center noWrap><b>20</b></TD>
+                <TD ID=H87722770 NAME=H87722770 class=article>Black, K. Игрушки-мультяшки от Katrin Black : мастер-классы и выкройки / [Katrin Black]. - Санкт-Петербург&nbsp;</TD><TD ID=U87722770 NAME=U87722770 valign=top noWrap>
+                    <A href="javascript:void(0);" onclick="objClickWiev(87722770); return false;"
+                       onmouseout="window.status='';" onmouseover="window.status='показать запись № 20'; return true;">
+                        <IMG alt="показать запись" border=0 src="/alis/other_files/card.png"></A>
+                </TD><TD><IMG border=0 src="/alis/other_files/space.png"></TD><TD ID=F87722770 valign=top><A href="javascript:void(0);" onclick="objClickSele(87722770);
+ return false;" onmouseout="window.status='';"
+                                                                                                             onmouseover="window.status='включить в список запись № 20'; return true;">
+                    <IMG alt="включить в список" border=0 src="/alis/other_files/in_list.png"></A>
+                </TD></TR></TBODY></TABLE></DIV>
+    <A ID=Agt NAME=AAgt
+       href="/alis/EK/do_other.php?frow=1&fcheck=1&ccheck=1&crow=1&action=10"
+       onmouseout="window.status=''; return true;"
+       onmouseover="window.status='следующие страницы '; return true;">&gt;&gt;&gt;</A>
+    <DIV align=center>
+        <TABLE border=0 cellPadding=2 cellSpacing=2 width="95%">
+            <TR class="listbzstat">
+                <TD width="100%" align="left">Запрос: <strong>2016&nbsp;</strong> Найдено  2665 зап. &nbsp;
+                </TD>
+                <TD align="right"><DIV align="right"></DIV> </TD>
+            </TR>
+        </TABLE>
+    </DIV>
+</BODY>
+</HTML>
