@@ -34,8 +34,7 @@ export function getNextPageUrl($) {
 }
 
 export function getBooks($) {
-  return $('.article').each(function () {
-    books.push($(this).text());
+   books.push($(this).text());
   });
 }
 
@@ -57,7 +56,7 @@ export function processBooks(options, callback) {
   getPage({ url: options.url, jar: options.jar }, (err, body) => {
     const $ = parsePage(body);
     getBooks($);
-    const nextPageUrl = getNextPageUrl($);
+
     callback(null, nextPageUrl);
   });
 }
