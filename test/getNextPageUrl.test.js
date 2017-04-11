@@ -4,17 +4,16 @@ import { expect } from 'chai';
 import { getNextPageUrl } from '../index';
 
 describe('method getNextPageUrl', () => {
-  it('should exists as a public method', (done) => {
+  it('should exists as a public method', () => {
     expect(typeof getNextPageUrl).to.equal('function');
-    done();
   });
 
-  it('should return next url', (done) => {
+  it('should return next page relative url', (done) => {
     const page = fs.readFileSync('./test/test.html');
     const $ = cheerio.load(page);
-    const pageLink = $('#Agt');
-    const pageUrl = (`${$(pageLink).attr('href')}`);
-    expect(getNextPageUrl($)).to.eql(pageUrl);
+    const nextPageUrl = getNextPageUrl($);
+    const relativeUrl = '/alis/EK/do_other.php?frow=1&fcheck=1&ccheck=1&crow=1&action=10';
+    expect(nextPageUrl).to.eql(relativeUrl);
     done();
   });
 });
