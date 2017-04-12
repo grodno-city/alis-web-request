@@ -1,8 +1,6 @@
 import request from 'request';
 import cheerio from 'cheerio';
 
-const books = [];
-
 export function sendInitialQuery(query, callback) {
   if (!query.year) {
     return process.nextTick(callback, new Error('query.year is not provided'));
@@ -34,14 +32,16 @@ export function getNextPageUrl($) {
 }
 
 export function getBooks($) {
-  return $('.article').each(function () {
+  const books = [];
+  $('.article').each(function () {
     books.push($(this).text());
   });
+  return books;
 }
 
 export function getNumberedPageUrls($, ip) {
   const relativePageUrls = $('a[href^=\'do_other\']');
-  const absolutePageUrls = $(relativePageUrls).map((i, link) => `http://${ip}/alis/EK/${$(link).attr('href')}`).toArray();
+  const absolutePageUrls = $(relativePageUrls).map((i, link) => `http://${ip}/alis/EK/${$(link).attr('href').replace(/\n/, '')}`).toArray();
   return absolutePageUrls;
 }
 
