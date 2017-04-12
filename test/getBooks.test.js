@@ -3,17 +3,19 @@ import fs from 'fs';
 import { expect } from 'chai';
 import { getBooks } from '../index';
 
-describe('method getBooks', () => {
-  it('should exists as a public method', () => {
+describe('getBooks, () => {}', () => {
+  it('should be a function', () => {
     expect(typeof getBooks).to.equal('function');
   });
 
-  it('should return title of book', (done) => {
+  it('should get titles of books', () => {
     const page = fs.readFileSync('./test/test.html');
     const $ = cheerio.load(page);
-    const book = getBooks($);
-    const title = 'Black, K. Игрушки-мультяшки от Katrin Black : мастер-классы и выкройки / [Katrin Black]. - Санкт-Петербург ';
-    expect(book[0]).to.eql(title);
-    done();
+
+    expect(getBooks($).map(el => el)).to.eql([
+      'Black, K. Игрушки-мультяшки от Katrin Black : мастер-классы и выкройки / [Katrin Black]. - Санкт-Петербург ',
+      'Black, K. Игрушки-мультяшки от Katrin Black : мастер-классы и выкройки / [Katrin Black]. - Санкт-Петербург ',
+    ],
+    );
   });
 });

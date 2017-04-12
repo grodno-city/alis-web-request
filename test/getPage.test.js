@@ -3,8 +3,8 @@ import request from 'request';
 import { expect } from 'chai';
 import { getPage } from '../index';
 
-describe('method getPage', () => {
-  it('should exists as a public method', () => {
+describe('getPage, () => {}', () => {
+  it('should be a function', () => {
     expect(typeof getPage).to.equal('function');
   });
 
@@ -18,6 +18,7 @@ describe('method getPage', () => {
     );
 
     nock(origin)
+      .matchHeader('Cookie: sessionalis=ra2lme8ap38rd2dt8o2dqo7vs1')
       .get(resource)
       .reply(200, '<html></html>');
 

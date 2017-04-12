@@ -2,25 +2,37 @@ import nock from 'nock';
 import { expect } from 'chai';
 import { sendInitialQuery } from '../index';
 
-describe('method sendInitialQuery', () => {
-  it('should exists as a public method', () => {
+describe('sendInitialQuery, () => {}', () => {
+  it('should be a function', () => {
     expect(typeof sendInitialQuery).to.equal('function');
   });
 
-  it('should makes http call to alis library and return html string and set cookie in jar', (done) => {
-    const origin = 'http://86.57.174.45';
-    const resource = '/alis/EK/do_searh.php?radiodate=simple&valueINP=2016&tema=1&tag=6';
-    const cookiesString = 'sessionid=38afes7a7';
+  const origin = 'http://86.57.174.45';
+  const resource = '/alis/EK/do_searh.php?radiodate=simple&valueINP=2016&tema=1&tag=6';
 
+  it('should return html string', (done) => {
     nock(origin)
       .get(resource)
       .reply(200, '<html></html>', {
-        'Set-Cookie': 'sessionid=38afes7a7',
+        'Set-Cookie': 'sessionalis=ra2lme8ap38rd2dt8o2dqo7vs1',
+      });
+
+    sendInitialQuery({ year: 2016, ip: '86.57.174.45' }, (err, data) => {
+      expect(data.page).to.equal('<html></html>');
+      done();
+    });
+  });
+
+  it('should set cookie in jar', (done) => {
+    nock(origin)
+      .get(resource)
+      .reply(200, '<html></html>', {
+        'Set-Cookie': 'sessionalis=ra2lme8ap38rd2dt8o2dqo7vs1',
       });
 
     sendInitialQuery({ year: 2016, ip: '86.57.174.45' }, (err, data) => {
       const cookies = data.jar.getCookieString(`${origin}${resource}`);
-      expect(data.page).to.equal('<html></html>');
+      const cookiesString = 'sessionalis=ra2lme8ap38rd2dt8o2dqo7vs1';
       expect(cookies).to.equal(cookiesString);
       done();
     });
