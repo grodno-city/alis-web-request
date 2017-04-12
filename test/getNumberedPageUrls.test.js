@@ -3,19 +3,20 @@ import fs from 'fs';
 import { expect } from 'chai';
 import { getNumberedPageUrls } from '../index';
 
-describe('method getNumberedPageUrls', () => {
-  it('should exists as a public method', (done) => {
+describe('getNumberedPageUrls, () => {}', () => {
+  it('should be a function', () => {
     expect(typeof getNumberedPageUrls).to.equal('function');
-    done();
   });
 
-  it('should return array urls', (done) => {
+  it('should return array urls', () => {
     const page = fs.readFileSync('./test/test.html');
-    const ip = '86.57.174.45';
     const $ = cheerio.load(page);
-    const pageLinks = $('a[href^=\'do_other\']');
-    const pageUrls = $(pageLinks).map((i, link) => `http://${ip}/alis/EK/${$(link).attr('href')}`).toArray();
-    expect(getNumberedPageUrls(page, ip)).to.eql(pageUrls);
-    done();
+    const ip = '86.57.174.45';
+    const numberedPageUrls = getNumberedPageUrls($, ip);
+    const arrUrls = [
+      'http://86.57.174.45/alis/EK/do_other.php?frow=1&fcheck=1&ccheck=1&action=1&crow=1',
+      'http://86.57.174.45/alis/EK/do_other.php?frow=1&fcheck=1&ccheck=1&action=2&crow=1',
+    ];
+    expect(numberedPageUrls).to.eql(arrUrls);
   });
 });
