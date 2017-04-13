@@ -8,15 +8,18 @@ describe('getNumberedPageUrls, () => {}', () => {
     expect(typeof getNumberedPageUrls).to.equal('function');
   });
 
-  it('should return array urls', () => {
+  it('should return nine numbered pages on long query results', () => {
+  });
+
+  it('should return relative URLs', () => {
+    // TODO read from proper fixture
     const page = fs.readFileSync('./test/test.html');
     const $ = cheerio.load(page);
-    const ip = '86.57.174.45';
-    const numberedPageUrls = getNumberedPageUrls($, ip);
-    const arrUrls = [
-      'http://86.57.174.45/alis/EK/do_other.php?frow=1&fcheck=1&ccheck=1&action=1&crow=1',
-      'http://86.57.174.45/alis/EK/do_other.php?frow=1&fcheck=1&ccheck=1&action=2&crow=1',
-    ];
-    expect(numberedPageUrls).to.eql(arrUrls);
+
+    const numberedPageUrls = getNumberedPageUrls($);
+    const absoluteUrls = numberedPageUrls.find(u => u.startsWith('http');
+
+    expect(numberedPageUrls).to.be.above(0);
+    expect(absoluteUrls).to.equal(0);
   });
 });
