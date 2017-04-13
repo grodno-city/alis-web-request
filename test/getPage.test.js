@@ -3,33 +3,48 @@ import request from 'request';
 import { expect } from 'chai';
 import { getPage } from '../index';
 
-describe('getPage, () => {}', () => {
+describe('getPage', () => {
   it('should be a function', () => {
     expect(typeof getPage).to.equal('function');
   });
 
-  it('should return html string', (done) => {
-    const origin = 'http://86.57.174.45';
-    const resource = '/alis/EK/do_other.php?frow=1&fcheck=1&ccheck=1&action=2&crow=1';
+  it('should return one page of a query results', (done) => {
+    const alisEndpoint = 'http://86.57.174.45';
+    const urlToSecondPage = '/alis/EK/do_other.php?frow=1&fcheck=1&ccheck=1&action=2&crow=1';
+
+    // Here we construct JAR manually, in normal operation `getPage` should use
+    // JAR returned from `sendInitialQuery`.
     const j = request.jar();
 
     j.setCookie(
-      request.cookie('sessionalis=ra2lme8ap38rd2dt8o2dqo7vs1'),
+      request.cookie('sessionalis=valid-session-id'),
     );
 
-    nock(origin)
-      .matchHeader('Cookie: sessionalis=ra2lme8ap38rd2dt8o2dqo7vs1')
-      .get(resource)
-      .reply(200, '<html></html>');
+    nock(alisEndpoint)
+      .matchHeader('Cookie: sessionalis=valid-session-id')
+      .get(urlToSecondPage)
+      .reply(200, '<html> ... mock results page ... </html>');
 
     const options = {
-      url: `${origin}${resource}`,
+      url: `${alisEndpoint}${urlToSecondPage}`,
       jar: j,
     };
 
-    getPage(options, (err, data) => {
-      expect(data).to.equal('<html></html>');
+    getPage(options, (err, pageHtml) => {
+      expect(err).to.be(undefined);
+      expect(pageHtml).to.equal('<html> ... mock results page ... </html>');
       done();
     });
+  });
+
+  it('should error when session is expired', (done) => {
+    // TODO expect
+    // Notice: Undefined index: namearm in E:\ALIS\pls\alis\EK\do_other.php on line 28
+
+    nock(alisEndpoint)
+      .matchHeader('Cookie: sessionalis=session-id-expired-on-server-side')
+      .get(urlToSecondPage)
+      // TODO use fixture
+      .reply(200, 'Notice: Undefined index: namearm in E:\\ALIS\\pls\\alis\\EK\\do_other.php on line 28\n <html> ... </html>');
   });
 });
