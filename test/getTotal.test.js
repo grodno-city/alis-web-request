@@ -1,3 +1,0 @@
-describe('getTotal', () => {
-  // TODO
-});
