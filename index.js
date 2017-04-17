@@ -31,34 +31,24 @@ export function getNextPageUrl($) {
   return pageUrl;
 }
 
-export function getTotalResult($) {
-  const totalResult = $('.listbzstat').first().text().match(/\d+(?=\sзап\.)/)[0];
-  return totalResult;
-}
-
-export function getTotalItems($) {
-  let totalItems = 0;
-  $('.article').each(() => {
-    totalItems += 1;
-  });
-  return totalItems;
+export function getTotal($) {
+  const total = $('.listbzstat').first().text().match(/\d+(?=\sзап\.)/)[0];
+  return total;
 }
 
 export function getItems($) {
-  const items = [];
-  $('.article').each(function () {
-    items.push(
-      {
-        id: $(this).attr('id'),
-        title: $(this).text(),
-      });
-  });
+  const items = $('.article').map(function (i, el) {
+    return {
+      id: $(el).attr('id'),
+      title: $(el).text().trim(),
+    };
+  }).toArray();
   return items;
 }
 
 export function getNumberedPageUrls($) {
   const pageLinks = $('a[href^=\'do_other\']');
-  const relativePageUrls = $(pageLinks).map((i, link) => $(link).attr('href').replace(/\r|\n/g, '')).toArray();
+  const relativePageUrls = $(pageLinks).map((i, link) => $(link).attr('href').replace(/\r|\n/g, '')).toArray().slice(0, -1);
   return relativePageUrls;
 }
 
