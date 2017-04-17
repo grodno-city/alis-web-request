@@ -3,14 +3,14 @@ import { sendInitialQuery } from '../../index';
 
 function writeLongResult(err, result) {
   if (err) {
-    return new Error(err);
+    return;
   }
   fs.writeFileSync('./test/fixtures/long-results.html', result.page);
 }
 
 function writeShortrResult(err, result) {
   if (err) {
-    return new Error(err);
+    return;
   }
   fs.writeFileSync('./test/fixtures/short-results.html', result.page);
 }

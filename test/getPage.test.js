@@ -45,11 +45,11 @@ describe('getPage', () => {
     const j = request.jar();
 
     j.setCookie(
-      request.cookie('sessionalis=valid-session-id'),
+      request.cookie('session-id-expired-on-server-side'),
     );
 
     nock(alisEndpoint)
-      .matchHeader('Cookie: sessionalis=session-id-expired-on-server-side')
+      .matchHeader('session-id-expired-on-server-side')
       .get(urlToSecondPage)
       .reply(200, 'Notice: Undefined index: namearm in E:\\ALIS\\pls\\alis\\EK\\do_other.php on line 28\n <html> ... </html>');
 

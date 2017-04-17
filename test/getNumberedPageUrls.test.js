@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { join } from 'path';
 import { getNumberedPageUrls } from '../index';
 
-const longResultsHtml = fs.readFileSync(join(__dirname, './fixtures/long-results.html'));
+const longResultsHtml = fs.readFileSync(join(__dirname, 'fixtures/long-results.html'));
 
 describe('getNumberedPageUrls', () => {
   it('should be a function', () => {
@@ -29,7 +29,6 @@ describe('getNumberedPageUrls', () => {
       'do_other.php?frow=1&fcheck=1&ccheck=1&action=7&crow=1',
       'do_other.php?frow=1&fcheck=1&ccheck=1&action=8&crow=1',
       'do_other.php?frow=1&fcheck=1&ccheck=1&action=9&crow=1',
-      'do_other.php?frow=1&fcheck=1&ccheck=1&crow=1&action=10',
     ];
     expect(numberedPageUrls).to.eql(arrUrls);
   });
@@ -37,9 +36,10 @@ describe('getNumberedPageUrls', () => {
   it('should return relative URLs', () => {
     const $ = cheerio.load(longResultsHtml);
     const numberedPageUrls = getNumberedPageUrls($);
-    const absoluteUrls = numberedPageUrls.map(u => u.startsWith('http'));
+    const absoluteUrls = numberedPageUrls.filter(u => u.startsWith('http'));
 
     expect(numberedPageUrls.length).to.be.above(0);
-    expect(absoluteUrls[0]).to.equal(false);
+    expect(numberedPageUrls.length).to.eql(9);
+    expect(absoluteUrls.length).to.equal(0);
   });
 });

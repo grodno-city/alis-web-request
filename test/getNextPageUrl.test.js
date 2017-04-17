@@ -2,10 +2,10 @@ import cheerio from 'cheerio';
 import fs from 'fs';
 import { join } from 'path';
 import { expect } from 'chai';
-import { getNextPageUrl, getTotalResult } from '../index';
+import { getNextPageUrl, getTotal } from '../index';
 
-const shortResultsHtml = fs.readFileSync(join(__dirname, './fixtures/short-results.html'));
-const longResultsHtml = fs.readFileSync(join(__dirname, './fixtures/long-results.html'));
+const shortResultsHtml = fs.readFileSync(join(__dirname, 'fixtures/short-results.html'));
+const longResultsHtml = fs.readFileSync(join(__dirname, 'fixtures/long-results.html'));
 
 describe('getNextPageUrl', () => {
   it('should be a function', () => {
@@ -18,19 +18,19 @@ describe('getNextPageUrl', () => {
 
   it('should return relative URL of the next page when there is more than 9 pages', () => {
     const $ = cheerio.load(longResultsHtml);
-    const totalResult = getTotalResult($);
+    const total = getTotal($);
     const nextPageUrl = getNextPageUrl($);
 
-    expect(totalResult).to.be.above(9 * 20);
+    expect(total).to.be.above(9 * 20);
     expect(nextPageUrl).to.eql('do_other.php?frow=1&fcheck=1&ccheck=1&crow=1&action=10');
   });
 
   it('should return undefined when there is less than 9 pages', () => {
     const $ = cheerio.load(shortResultsHtml);
-    const totalResult = getTotalResult($);
+    const total = getTotal($);
     const nextPageUrl = getNextPageUrl($);
 
-    expect(totalResult).to.be.at.most(9 * 20);
+    expect(total).to.be.at.most(9 * 20);
     expect(nextPageUrl).to.eql(undefined);
   });
 });
