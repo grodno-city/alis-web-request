@@ -1,4 +1,30 @@
-// TODO send query for JAVASCRIPT in book title
-// TODO persist response body into fixtures/short-results.html
+import fs from 'fs';
+import { sendInitialQuery } from '../../index';
 
-// TODO fetch long results
+function writeLongResult(err, result) {
+  if (err) {
+    return;
+  }
+  fs.writeFileSync('./test/fixtures/long-results.html', result.page);
+}
+
+function writeShortrResult(err, result) {
+  if (err) {
+    return;
+  }
+  fs.writeFileSync('./test/fixtures/short-results.html', result.page);
+}
+
+const longParams = {
+  year: 2016,
+  alisEndpoint: 'http://86.57.174.45',
+};
+
+sendInitialQuery(longParams, writeLongResult);
+
+const shortParams = {
+  year: 2017,
+  alisEndpoint: 'http://86.57.174.45',
+};
+
+sendInitialQuery(shortParams, writeShortrResult);

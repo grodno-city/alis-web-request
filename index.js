@@ -6,7 +6,7 @@ export function sendInitialQuery(query, callback) {
     return process.nextTick(callback, new Error('query.year is not provided'));
   }
   const j = request.jar();
-  const INITIAL_URL = `http://${query.ip}/alis/EK/do_searh.php?radiodate=simple&valueINP=${query.year}&tema=1&tag=6`;
+  const INITIAL_URL = `${query.alisEndpoint}/alis/EK/do_searh.php?radiodate=simple&valueINP=${query.year}&tema=1&tag=6`;
   request({ url: INITIAL_URL, jar: j }, (err, response, body) => {
     if (err) {
       callback(err);
@@ -31,18 +31,25 @@ export function getNextPageUrl($) {
   return pageUrl;
 }
 
-export function getBooks($) {
-  const books = [];
-  $('.article').each(function () {
-    books.push($(this).text());
-  });
-  return books;
+export function getTotal($) {
+  const total = $('.listbzstat').first().text().match(/\d+(?=\sзап\.)/)[0];
+  return total;
 }
 
-export function getNumberedPageUrls($, ip) {
-  const relativePageUrls = $('a[href^=\'do_other\']');
-  const absolutePageUrls = $(relativePageUrls).map((i, link) => `http://${ip}/alis/EK/${$(link).attr('href').replace(/\n/, '')}`).toArray();
-  return absolutePageUrls;
+export function getItems($) {
+  const items = $('.article').map(function (i, el) {
+    return {
+      id: $(el).attr('id'),
+      title: $(el).text().trim(),
+    };
+  }).toArray();
+  return items;
+}
+
+export function getNumberedPageUrls($) {
+  const pageLinks = $('a[href^=\'do_other\']');
+  const relativePageUrls = $(pageLinks).map((i, link) => $(link).attr('href').replace(/\r|\n/g, '')).toArray().slice(0, -1);
+  return relativePageUrls;
 }
 
 export function parsePage(body) {
@@ -50,13 +57,13 @@ export function parsePage(body) {
   return $;
 }
 
-export function processBooks(options, callback) {
+export function processItems(options, callback) {
   if (!options) {
     return process.nextTick(callback, new Error('options is not provided'));
   }
   getPage({ url: options.url, jar: options.jar }, (err, body) => {
     const $ = parsePage(body);
-    getBooks($);
+    getItems($);
     const nextPageUrl = getNextPageUrl($);
     callback(null, nextPageUrl);
   });
@@ -66,7 +73,7 @@ export function run(fn, q, options) {
   if (!q) {
     return new Error('q is not provided');
   }
-  fn({ url: q[0], jar: options.jar }, (err, nextPageUrl) => {
+  fn({ url: `${options.alisEndpoint}/alis/EK/${q[0]}`, jar: options.jar }, (err, nextPageUrl) => {
     if (err) {
       return err;
     }
@@ -75,7 +82,7 @@ export function run(fn, q, options) {
       return;
     }
     if (q.length === 1) {
-      remainingQueue.push(`http://${options.ip}/alis/EK/${nextPageUrl}`);
+      remainingQueue.push(`${nextPageUrl}`);
     }
     run(fn, remainingQueue, options);
   });

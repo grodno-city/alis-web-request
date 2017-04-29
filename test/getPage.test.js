@@ -31,20 +31,37 @@ describe('getPage', () => {
     };
 
     getPage(options, (err, pageHtml) => {
-      expect(err).to.be(undefined);
+      expect(err).to.equal(null);
       expect(pageHtml).to.equal('<html> ... mock results page ... </html>');
       done();
     });
   });
 
   it('should error when session is expired', (done) => {
-    // TODO expect
-    // Notice: Undefined index: namearm in E:\ALIS\pls\alis\EK\do_other.php on line 28
+    const alisEndpoint = 'http://86.57.174.45';
+    const urlToSecondPage = '/alis/EK/do_other.php?frow=1&fcheck=1&ccheck=1&action=2&crow=1';
+    // Here we construct JAR manually, in normal operation `getPage` should use
+    // JAR returned from `sendInitialQuery`.
+    const j = request.jar();
+
+    j.setCookie(
+      request.cookie('session-id-expired-on-server-side'),
+    );
 
     nock(alisEndpoint)
-      .matchHeader('Cookie: sessionalis=session-id-expired-on-server-side')
+      .matchHeader('session-id-expired-on-server-side')
       .get(urlToSecondPage)
-      // TODO use fixture
       .reply(200, 'Notice: Undefined index: namearm in E:\\ALIS\\pls\\alis\\EK\\do_other.php on line 28\n <html> ... </html>');
+
+    const options = {
+      url: `${alisEndpoint}${urlToSecondPage}`,
+      jar: j,
+    };
+
+    getPage(options, (err, pageHtml) => {
+      expect(err).to.equal(null);
+      expect(pageHtml).to.equal('Notice: Undefined index: namearm in E:\\ALIS\\pls\\alis\\EK\\do_other.php on line 28\n <html> ... </html>');
+      done();
+    });
   });
 });

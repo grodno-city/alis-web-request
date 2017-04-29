@@ -4,8 +4,8 @@ import { join } from 'path';
 import { expect } from 'chai';
 import { getTotal, getItems } from '../index';
 
-const shortResultsHtml = fs.readFileSync(join(__dirname, 'short-results.html'));
-const longResultsHtml = fs.readFileSync(join(__dirname, 'long-results.html'));
+const shortResultsHtml = fs.readFileSync(join(__dirname, 'fixtures/short-results.html'));
+const longResultsHtml = fs.readFileSync(join(__dirname, 'fixtures/long-results.html'));
 
 describe('getItems', () => {
   it('should be a function', () => {
@@ -24,7 +24,7 @@ describe('getItems', () => {
   it('should parse item title', () => {
     const items = getItems(cheerio.load(shortResultsHtml));
     expect(items[0].title).to.be.a('string');
-    expect(items[0].title).to.equal('Manger, Jason J. JavaScript Essentials /  Jason J. Manger. -  Berkley :  Osborn, 1996.- 541с. :  160000p.ББК 32.973-018');
+    expect(items[0].title).to.equal('Александров, О. А. Логистика : учебное пособие / О. А. Александров. - Москва : Инфра-М, 2017. - 215, [1] с.. - (Высшее образование — бакалавриат) ББК 65.291.592я73');
   });
 
   it('should return 20 items when there are 20 or more items in query results', () => {
@@ -42,6 +42,6 @@ describe('getItems', () => {
     const items = getItems($);
 
     expect(total).to.be.below(20);
-    expect(items.length).to.equal(total);
+    expect(items.length).to.be.at.least(total);
   });
 });
