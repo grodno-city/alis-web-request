@@ -1,5 +1,7 @@
 # alis-web-request
+
 Request data from ALIS WEB system
+
 ## Installing
 
 npm
@@ -12,57 +14,55 @@ yarn
 yarn add alis-web-request
 ```
 
-## API
+## API methods 
 
-* ReadableStreamBooks - get all books by year through stream 
-* sendInitialQuery - make initial http query
-* getPage - get page body
-* getNumberedPageUrls - get ten page urls
-* getNextPageUrl - get next page url
-* getBooks - get books on the page
-* run - recursive runner
-
+* sendInitialQuery - make initial http query to alis library for get main page and cookie id.
+* getPage - get page body from the specified url.
+* getNumberedPageUrls - get firs ten numbered urls from main page.
+* getNextPageUrl - get next page url from the specified url.
+* processItems - to managements another functions getPage, getNextPageUrl, pushItemsToStream.
+* getItems - get id with title all books on the page.
+* run - run processItems function over queue with options.
+* ReadableStreamItems - readable stream for read items. 
 
 ## Examples
 
-You can save books, for example in a database.
-In the following example, the books are stored in an array.
 ```js
 import Stream from 'stream';
-import { sendInitialQuery, getPage, getNumberedPageUrls, run, ReadableStreamBooks } from 'alis-web-request';
+import { sendInitialQuery, getNumberedPageUrls, run, processItems, parsePage, ReadableStreamItems } from './index';
 
-const WritableStreamBooks = new Stream.Writable();
-ReadableStreamBooks.pipe(WritableStreamBooks);
+const WritableStreamItems = new Stream.Writable({ objectMode: true });
 
-const books = [];
+ReadableStreamItems.pipe(WritableStreamItems);
 
 const initParams = {
-  year: 2015,
-  ip: '86.57.174.45',
+  year: 2017,
+  alisEndpoint: 'http://86.57.174.45',
 };
 
 sendInitialQuery(initParams, (err, res) => {
   if (err) {
-    console.log(err);
-    return;
+    return new Error(err);
   }
-  const firstTenPageUrls = getNumberedPageUrls(res.page, initParams.ip);
-  run(getPage, firstTenPageUrls, initParams.ip, res.jar);
+
+  const options = {
+    alisEndpoint: initParams.alisEndpoint,
+    jar: res.jar,
+  };
+  const $ = parsePage(res.page);
+  const firstNumberedPageUrls = getNumberedPageUrls($);
+
+  run(processItems, firstNumberedPageUrls, options);
 });
 
-WritableStreamBooks._write = (book, encoding, done) => {
-  books.push(book);
-  console.log(`STREAM: ${books.length}`);
-  // ready to process the next chunk
+const items = [];
+
+WritableStreamItems._write = (item, encoding, done) => {
+  items.push(item);
   done();
 };
 
 ```
-
-## Built With
-
-* [request](https://github.com/request/request) - Simplified HTTP client
-* [cheerio](https://github.com/cheeriojs/cheerio) - Fast, flexible & lean implementation of core jQuery designed specifically for the server.
 
 ## Authors
 * **Vadim Demyanchik** - [GitHub](https://github.com/DemyanchikVadim)
