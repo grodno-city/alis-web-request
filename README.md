@@ -6,12 +6,12 @@ Request data from ALIS WEB system
 
 npm
 ```
-npm install alis-web-request --save
+npm install @grodno-city/alis-web-request --save-dev
 ```
 
 yarn 
 ```
-yarn add alis-web-request
+yarn add @grodno-city/alis-web-request
 ```
 
 ## API methods 
@@ -25,11 +25,11 @@ yarn add alis-web-request
 * run - run processItems function over queue with options.
 * ReadableStreamItems - readable stream for read items. 
 
-## Examples
+## Example
 
 ```js
 import Stream from 'stream';
-import { sendInitialQuery, getNumberedPageUrls, run, processItems, parsePage, ReadableStreamItems } from './index';
+import { sendInitialQuery, getNumberedPageUrls, run, processItems, parsePage, ReadableStreamItems } from '@grodno-city/alis-web-request';
 
 const WritableStreamItems = new Stream.Writable({ objectMode: true });
 
