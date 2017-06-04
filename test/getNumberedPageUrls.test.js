@@ -29,6 +29,7 @@ describe('getNumberedPageUrls', () => {
       'do_other.php?frow=1&fcheck=1&ccheck=1&action=7&crow=1',
       'do_other.php?frow=1&fcheck=1&ccheck=1&action=8&crow=1',
       'do_other.php?frow=1&fcheck=1&ccheck=1&action=9&crow=1',
+      'do_other.php?frow=1&fcheck=1&ccheck=1&crow=1&action=10',
     ];
     expect(numberedPageUrls).to.eql(arrUrls);
   });
@@ -39,7 +40,7 @@ describe('getNumberedPageUrls', () => {
     const absoluteUrls = numberedPageUrls.filter(u => u.startsWith('http'));
 
     expect(numberedPageUrls.length).to.be.above(0);
-    expect(numberedPageUrls.length).to.eql(9);
+    expect(numberedPageUrls.length).to.eql(10);
     expect(absoluteUrls.length).to.equal(0);
   });
 });
