@@ -1,28 +1,33 @@
 import Stream from 'stream';
-import { sendInitialQuery, getPage, getNumberedPageUrls, run, ReadableStreamBooks } from './index';
+import { sendInitialQuery, getNumberedPageUrls, run, processItems, parsePage, ReadableStreamItems } from './index';
 
-const WritableStreamBooks = new Stream.Writable();
-ReadableStreamBooks.pipe(WritableStreamBooks);
+const WritableStreamItems = new Stream.Writable({ objectMode: true });
 
-const books = [];
+ReadableStreamItems.pipe(WritableStreamItems);
 
 const initParams = {
-  year: 2015,
-  ip: '86.57.174.45',
+  year: 2017,
+  alisEndpoint: 'http://86.57.174.45',
 };
 
 sendInitialQuery(initParams, (err, res) => {
   if (err) {
-    console.log(err);
-    return;
+    return new Error(err);
   }
-  const firstTenPageUrls = getNumberedPageUrls(res.page, initParams.ip);
-  run(getPage, firstTenPageUrls, initParams.ip, res.jar);
+
+  const options = {
+    alisEndpoint: initParams.alisEndpoint,
+    jar: res.jar,
+  };
+  const $ = parsePage(res.page);
+  const firstNumberedPageUrls = getNumberedPageUrls($);
+
+  run(processItems, firstNumberedPageUrls, options);
 });
 
-WritableStreamBooks._write = (book, encoding, done) => {
-  books.push(book);
-  console.log(`STREAM ${books.length}`);
-  // ready to process the next chunk
+const items = [];
+
+WritableStreamItems._write = (item, encoding, done) => {
+  items.push(item);
   done();
 };

@@ -6,3 +6,4 @@ index.js
 .gitignore
 consumer.js
 node_modules
+.travis.yml
