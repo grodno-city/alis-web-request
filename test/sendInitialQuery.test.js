@@ -8,33 +8,45 @@ describe('sendInitialQuery', () => {
   });
 
   it('should return first page of query results', (done) => {
-    const alisEndpoint = 'http://86.57.174.45';
-    const firstPageUrl = '/alis/EK/do_searh.php?radiodate=simple&valueINP=2016&tema=1&tag=6';
+    const initParams = {
+      query: 2016,
+      alisEndpoint: 'http://86.57.174.45',
+      tema: 1,
+      tag: 6,
+    };
 
-    nock(alisEndpoint)
+    const firstPageUrl = `/alis/EK/do_searh.php?radiodate=simple&valueINP=${initParams.query}&tema=${initParams.tema}&tag=${initParams.tag}`;
+
+    nock(initParams.alisEndpoint)
       .get(firstPageUrl)
       .reply(200, '<html></html>', {
         'Set-Cookie': 'sessionalis=ra2lme8ap38rd2dt8o2dqo7vs1',
       });
 
-    sendInitialQuery({ year: 2016, alisEndpoint }, (err, result) => {
+    sendInitialQuery(initParams, (err, result) => {
       expect(result.page).to.equal('<html></html>');
       done();
     });
   });
 
   it('should set cookie in jar', (done) => {
-    const alisEndpoint = 'http://86.57.174.45';
-    const firstPageUrl = '/alis/EK/do_searh.php?radiodate=simple&valueINP=2016&tema=1&tag=6';
+    const initParams = {
+      query: 2016,
+      alisEndpoint: 'http://86.57.174.45',
+      tema: 1,
+      tag: 6,
+    };
 
-    nock(alisEndpoint)
+    const firstPageUrl = `/alis/EK/do_searh.php?radiodate=simple&valueINP=${initParams.query}&tema=${initParams.tema}&tag=${initParams.tag}`;
+
+    nock(initParams.alisEndpoint)
       .get(firstPageUrl)
       .reply(200, '<html></html>', {
         'Set-Cookie': 'sessionalis=ra2lme8ap38rd2dt8o2dqo7vs1',
       });
 
-    sendInitialQuery({ year: 2016, alisEndpoint }, (err, result) => {
-      const cookies = result.jar.getCookieString(`${alisEndpoint}${firstPageUrl}`).replace('=', ' ').split(' ');
+    sendInitialQuery(initParams, (err, result) => {
+      const cookies = result.jar.getCookieString(`${initParams.alisEndpoint}${firstPageUrl}`).replace('=', ' ').split(' ');
       const key = 'sessionalis';
       const value = 'ra2lme8ap38rd2dt8o2dqo7vs1';
       expect(cookies[0]).to.equal(key);
