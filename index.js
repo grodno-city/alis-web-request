@@ -2,13 +2,15 @@ import request from 'request';
 import cheerio from 'cheerio';
 import Stream from 'stream';
 
-export function sendInitialQuery(query, callback) {
-  if (!query.year) {
+export function sendInitialQuery(params, callback) {
+  if (!params.query) {
     return process.nextTick(callback, new Error('query.year is not provided'));
   }
 
   const j = request.jar();
-  const INITIAL_URL = `${query.alisEndpoint}/alis/EK/do_searh.php?radiodate=simple&valueINP=${query.year}&tema=1&tag=6`;
+  const alisEndpoint = `${params.alisEndpoint}`;
+  const firstPageUrl = `/alis/EK/do_searh.php?radiodate=simple&valueINP=${encodeURIComponent(params.query)}&tema=${params.tema}&tag=${params.tag}`;
+  const INITIAL_URL = `${alisEndpoint}${firstPageUrl}`;
 
   request({ url: INITIAL_URL, jar: j }, (err, response, body) => {
     if (err) {
@@ -49,19 +51,6 @@ export function getItems($) {
   return items;
 }
 
-export const ReadableStreamItems = new Stream.Readable({ objectMode: true });
-/* This is a temporary solution _read = () => {}, that will be changed */
-ReadableStreamItems._read = () => {};
-
-export function pushItemsToStream(items) {
-  return items.map(item =>
-   ReadableStreamItems.push({
-     id: item.id,
-     title: item.title,
-   }),
-);
-}
-
 export function getNumberedPageUrls($) {
   const pageLinks = $('a[href^=\'do_other\']');
   const relativePageUrls = $(pageLinks).map((i, link) => $(link).attr('href').replace(/\r|\n/g, '')).toArray();
@@ -80,14 +69,14 @@ export function processItems(options, callback) {
 
   getPage({ url: options.url, jar: options.jar }, (err, body) => {
     const $ = parsePage(body);
-    pushItemsToStream(getItems($));
-
+    const items = getItems($);
     const nextPageUrl = getNextPageUrl($);
-    callback(null, nextPageUrl);
+
+    callback(null, nextPageUrl, items);
   });
 }
 
-export function run(fn, q, options) {
+export function run(fn, q, options, callback) {
   if (!q) {
     return new Error('q is not provided');
   }
@@ -96,7 +85,7 @@ export function run(fn, q, options) {
     return;
   }
 
-  fn({ url: `${options.alisEndpoint}/alis/EK/${q[0]}`, jar: options.jar }, (err, nextPageUrl) => {
+  fn({ url: `${options.alisEndpoint}/alis/EK/${q[0]}`, jar: options.jar }, (err, nextPageUrl, items) => {
     if (err) {
       return err;
     }
@@ -106,6 +95,33 @@ export function run(fn, q, options) {
       remainingQueue.push(`${nextPageUrl}`);
     }
 
-    run(fn, remainingQueue, options);
+    callback(null, items);
+    run(fn, remainingQueue, options, callback);
   });
+}
+
+export function getBooks(initParams) {
+  const ReadableStreamItems = new Stream.Readable({ objectMode: true });
+  /* This is a temporary solution _read = () => {}, that will be changed */
+  ReadableStreamItems._read = () => {};
+
+  sendInitialQuery(initParams, (error, res) => {
+    if (error) {
+      return new Error(error);
+    }
+
+    const options = {
+      alisEndpoint: initParams.alisEndpoint,
+      jar: res.jar,
+    };
+
+    const $ = parsePage(res.page);
+    const firstNumberedPageUrls = getNumberedPageUrls($);
+
+    const getItemsCallback = (err, items) => err ? new Error(err) : ReadableStreamItems.push(items);
+
+    run(processItems, firstNumberedPageUrls, options, getItemsCallback);
+  });
+
+  return ReadableStreamItems;
 }
