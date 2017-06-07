@@ -51,6 +51,20 @@ export function getItems($) {
   return items;
 }
 
+export function getItemInfo($){
+  //
+  //return itemInfo
+}
+
+export function getItemsId($) {
+  const items = $('.article').map(function (i, el) {
+    return {
+      id: $(el).attr('id')
+    };
+  }).toArray();
+  return items;
+}
+
 export function getNumberedPageUrls($) {
   const pageLinks = $('a[href^=\'do_other\']');
   const relativePageUrls = $(pageLinks).map((i, link) => $(link).attr('href').replace(/\r|\n/g, '')).toArray();
@@ -76,7 +90,33 @@ export function processItems(options, callback) {
   });
 }
 
-export function run(fn, q, options, callback) {
+export function returnPagesItems(options, pageNumber, total, callback){
+  if (!options) {
+    return process.nextTick(callback, new Error('provided is not provided'));
+  }
+  if (!pageNumber) {
+    return process.nextTick(callback, new Error('pageNumber is not provided'));
+  }
+  if (pageNumber>total/20) {
+    return process.nextTick(callback, new Error('page doesnt exist'));
+  }
+  // const remainingQueue = q.slice(1);
+  // if (q.length === 1) {
+  //   remainingQueue.push(`${nextPageUrl}`);
+  // }
+  getPage({ url: `${options.alisEndpoint}/alis/EK/do_other.php?frow=1&fcheck=1&ccheck=1&action=${pageNumber}&crow=1`, jar: options.jar}, (err, body) => {
+    if (err) {
+      return callback(err);
+    }
+    const $ = parsePage(body);
+    const items = getItemsId($);
+    const nextPageUrl = getNextPageUrl($);
+
+    return callback(null, items,nextPageUrl);
+  });
+}
+// TODO install package for eslint ...in pj
+export function run(fn, q, memo, options, callback) {
   if (!q) {
     return new Error('q is not provided');
   }
@@ -85,18 +125,13 @@ export function run(fn, q, options, callback) {
     return;
   }
 
-  fn({ url: `${options.alisEndpoint}/alis/EK/${q[0]}`, jar: options.jar }, (err, nextPageUrl, items) => {
+  fn(memo, q, { url: `${options.alisEndpoint}/alis/EK/${q[0]}`, jar: options.jar }, (err, nextMemo, nextQ) => {
     if (err) {
       return err;
     }
 
-    const remainingQueue = q.slice(1);
-    if (q.length === 1) {
-      remainingQueue.push(`${nextPageUrl}`);
-    }
-
-    callback(null, items);
-    run(fn, remainingQueue, options, callback);
+    if (nextQ.length===0) return callback(null, memo);
+    run(fn, remainingQueue, memo,  options, callback);
   });
 }
 
