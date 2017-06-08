@@ -1,47 +1,16 @@
-import {
-  sendInitialQuery,
-  getNumberedPageUrls,
-  run,
-  processItems,
-  parsePage,
-} from './index';
+import { getBooksByYear } from './index';
 
-const initParams = {
-  query: 2010,
-  alisEndpoint: 'http://86.57.174.45',
-  tema: 1,
-  tag: 6,
-};
-
-sendInitialQuery(initParams, (err, res) => {
-  if (err) {
-    return new Error(err);
-  }
-  const options = {
-    alisEndpoint: initParams.alisEndpoint,
-    jar: res.jar,
-  };
-  const $ = parsePage(res.page);
-  const firstNumberedPageUrls = getNumberedPageUrls($);
-  const remainingQueue = firstNumberedPageUrls;
-  run(processItems, remainingQueue, [], options, (runErr, memo) => {
-    if (err) {
-      return err;
-    }
-    console.log('memo.length All: ', memo.length);
-  });
+// 'type' is a books type. in alis-web used name 'tema'. 6-"книги".
+// There is a 8 types:
+// 'All' - 'все типы'
+// 1 - 'Книги'
+// 2 - "Статьи"
+// 3 - "Краеведение"
+// 4 - "Ноты"
+// 5 - "Авторефераты Диссертаций"
+// 6 - "Аудиовизуальные документы"
+// 7 - "Электронные документы"
+// 8 - "Периодика"
+getBooksByYear(2017, 1, (err, memo) => {
+  console.log('memo.length All: ', memo.length);
 });
-
-// const pageNumber = 1;
-// returnPagesItems(options, pageNumber, total, (err, items, nextPageUrl) => {
-//   if (!err) {
-//     remainingQueue.splice(pageNumber - 1, 1);
-//     if (remainingQueue.length === 1) {
-//       remainingQueue.push(`${nextPageUrl}`);
-//     }
-//     // indexItems(items);
-//     console.log(items);
-//     console.log('q : ', remainingQueue);
-//   }
-//   return err;
-// });

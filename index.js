@@ -111,6 +111,35 @@ export function run(fn, q, memo, options, callback) {
   });
 }
 
+export function getBooksByYear(year, type, callback) {
+  console.log('year: ', year, 'type: ', type);
+  const initParams = {
+    query: year,
+    alisEndpoint: 'http://86.57.174.45',
+    tema: type,
+    tag: 6,
+  };
+
+  sendInitialQuery(initParams, (err, res) => {
+    if (err) {
+      return new Error(err);
+    }
+    const options = {
+      alisEndpoint: initParams.alisEndpoint,
+      jar: res.jar,
+    };
+    const $ = parsePage(res.page);
+    const firstNumberedPageUrls = getNumberedPageUrls($);
+    const remainingQueue = firstNumberedPageUrls;
+    run(processItems, remainingQueue, [], options, (runErr, memo) => {
+      if (err) {
+        return callback(err);
+      }
+      callback(null, memo);
+    });
+  });
+}
+
 export function getBooks(initParams) {
   const ReadableStreamItems = new Stream.Readable({ objectMode: true });
   /* This is a temporary solution _read = () => {}, that will be changed */
