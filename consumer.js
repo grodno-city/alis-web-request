@@ -1,33 +1,26 @@
 import Stream from 'stream';
-import { sendInitialQuery, getNumberedPageUrls, run, processItems, parsePage, ReadableStreamItems } from './index';
+import { getBooks } from './index';
 
 const WritableStreamItems = new Stream.Writable({ objectMode: true });
 
-ReadableStreamItems.pipe(WritableStreamItems);
-
 const initParams = {
-  year: 2017,
+  query: 2016,
   alisEndpoint: 'http://86.57.174.45',
+  tema: 1,
+  tag: 6,
 };
 
-sendInitialQuery(initParams, (err, res) => {
-  if (err) {
-    return new Error(err);
-  }
+getBooks(initParams).pipe(WritableStreamItems);
 
-  const options = {
-    alisEndpoint: initParams.alisEndpoint,
-    jar: res.jar,
-  };
-  const $ = parsePage(res.page);
-  const firstNumberedPageUrls = getNumberedPageUrls($);
+const books = [];
 
-  run(processItems, firstNumberedPageUrls, options);
-});
+WritableStreamItems._write = (items, encoding, done) => {
+  items.map(el =>
+   books.push({
+     id: el.id,
+     title: el.title,
+   }),
+  );
 
-const items = [];
-
-WritableStreamItems._write = (item, encoding, done) => {
-  items.push(item);
   done();
 };
