@@ -1,6 +1,5 @@
 import request from 'request';
 import cheerio from 'cheerio';
-import Stream from 'stream';
 
 export function sendInitialQuery(query, callback) {
   if (!query.year) {
@@ -49,19 +48,6 @@ export function getItems($) {
   return items;
 }
 
-export const ReadableStreamItems = new Stream.Readable({ objectMode: true });
-/* This is a temporary solution _read = () => {}, that will be changed */
-ReadableStreamItems._read = () => {};
-
-export function pushItemsToStream(items) {
-  return items.map(item =>
-   ReadableStreamItems.push({
-     id: item.id,
-     title: item.title,
-   }),
-);
-}
-
 export function getNumberedPageUrls($) {
   const pageLinks = $('a[href^=\'do_other\']');
   const relativePageUrls = $(pageLinks).map((i, link) => $(link).attr('href').replace(/\r|\n/g, '')).toArray();
@@ -80,8 +66,6 @@ export function processItems(options, callback) {
 
   getPage({ url: options.url, jar: options.jar }, (err, body) => {
     const $ = parsePage(body);
-    pushItemsToStream(getItems($));
-
     const nextPageUrl = getNextPageUrl($);
     callback(null, nextPageUrl);
   });
