@@ -3,12 +3,6 @@ import cheerio from 'cheerio';
 
 import queryMap from './queryMap.json'
 
-// const initParams = {
-//   query: 'string',
-//   alisEndpoint: 'http://86.57.174.45',
-//   recordType: "Книги",
-//   queryType: "Год издания",
-// };
 export function sendInitialQuery(params, callback) {
   if (!params.query) {
     return process.nextTick(callback, new Error('params is not provided'));
@@ -117,5 +111,27 @@ export function run(fn, q, memo, options, callback) {
     console.log('memo.length: ', memo.length);
     console.log('nextQ.length: ', nextQ.length);
     run(fn, nextQ, memo, options, callback);
+  });
+}
+
+export function getRecordsByQuery(initParams, callback) {
+
+  sendInitialQuery(initParams, (err, res) => {
+    if (err) {
+      return new Error(err);
+    }
+    const options = {
+      alisEndpoint: initParams.alisEndpoint,
+      jar: res.jar,
+    };
+    const $ = parsePage(res.page);
+    const firstNumberedPageUrls = getNumberedPageUrls($);
+    const remainingQueue = firstNumberedPageUrls;
+    run(processItems, remainingQueue, [], options, (runErr, memo) => {
+      if (err) {
+        return callback(err);
+      }
+      callback(null, memo);
+    });
   });
 }
