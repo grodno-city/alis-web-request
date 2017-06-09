@@ -1,33 +1,16 @@
-import Stream from 'stream';
-import { sendInitialQuery, getNumberedPageUrls, run, processItems, parsePage, ReadableStreamItems } from './index';
+import { getBooksByYear } from './index';
 
-const WritableStreamItems = new Stream.Writable({ objectMode: true });
-
-ReadableStreamItems.pipe(WritableStreamItems);
-
-const initParams = {
-  year: 2017,
-  alisEndpoint: 'http://86.57.174.45',
-};
-
-sendInitialQuery(initParams, (err, res) => {
-  if (err) {
-    return new Error(err);
-  }
-
-  const options = {
-    alisEndpoint: initParams.alisEndpoint,
-    jar: res.jar,
-  };
-  const $ = parsePage(res.page);
-  const firstNumberedPageUrls = getNumberedPageUrls($);
-
-  run(processItems, firstNumberedPageUrls, options);
+// 'type' is a books type. in alis-web used name 'tema'. 6-"книги".
+// There is a 8 types:
+// 'All' - 'все типы'
+// 1 - 'Книги'
+// 2 - "Статьи"
+// 3 - "Краеведение"
+// 4 - "Ноты"
+// 5 - "Авторефераты Диссертаций"
+// 6 - "Аудиовизуальные документы"
+// 7 - "Электронные документы"
+// 8 - "Периодика"
+getBooksByYear(2017, 1, (err, memo) => {
+  console.log('memo.length All: ', memo.length);
 });
-
-const items = [];
-
-WritableStreamItems._write = (item, encoding, done) => {
-  items.push(item);
-  done();
-};

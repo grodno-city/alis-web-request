@@ -2,13 +2,15 @@ import request from 'request';
 import cheerio from 'cheerio';
 import Stream from 'stream';
 
-export function sendInitialQuery(query, callback) {
-  if (!query.year) {
+export function sendInitialQuery(params, callback) {
+  if (!params.query) {
     return process.nextTick(callback, new Error('query.year is not provided'));
   }
 
   const j = request.jar();
-  const INITIAL_URL = `${query.alisEndpoint}/alis/EK/do_searh.php?radiodate=simple&valueINP=${query.year}&tema=1&tag=6`;
+  const alisEndpoint = `${params.alisEndpoint}`;
+  const firstPageUrl = `/alis/EK/do_searh.php?radiodate=simple&valueINP=${encodeURIComponent(params.query)}&tema=${params.tema}&tag=${params.tag}`;
+  const INITIAL_URL = `${alisEndpoint}${firstPageUrl}`;
 
   request({ url: INITIAL_URL, jar: j }, (err, response, body) => {
     if (err) {
@@ -22,6 +24,7 @@ export function sendInitialQuery(query, callback) {
 export function getPage(options, callback) {
   request({ url: options.url, jar: options.jar }, (err, response, body) => {
     if (err) {
+      console.log(err);
       return callback(err);
     }
     callback(null, body);
@@ -49,17 +52,13 @@ export function getItems($) {
   return items;
 }
 
-export const ReadableStreamItems = new Stream.Readable({ objectMode: true });
-/* This is a temporary solution _read = () => {}, that will be changed */
-ReadableStreamItems._read = () => {};
-
-export function pushItemsToStream(items) {
-  return items.map(item =>
-   ReadableStreamItems.push({
-     id: item.id,
-     title: item.title,
-   }),
-);
+export function getItemsId($) {
+  const items = $('.article').map(function (i, el) {
+    return {
+      id: $(el).attr('id'),
+    };
+  }).toArray();
+  return items;
 }
 
 export function getNumberedPageUrls($) {
@@ -73,39 +72,96 @@ export function parsePage(body) {
   return $;
 }
 
-export function processItems(options, callback) {
+export function processItems(memo, q, options, callback) {
   if (!options) {
     return process.nextTick(callback, new Error('options is not provided'));
   }
 
   getPage({ url: options.url, jar: options.jar }, (err, body) => {
+    if (err) return callback(err);
     const $ = parsePage(body);
-    pushItemsToStream(getItems($));
-
+    const items = getItemsId($);
     const nextPageUrl = getNextPageUrl($);
-    callback(null, nextPageUrl);
+    const remainingQueue = q.slice(1);
+    if (q.length === 1) {
+      remainingQueue.push(`${nextPageUrl}`);
+    }
+    items.forEach((item) => {
+      memo.push(item);
+    });
+    callback(null, memo, remainingQueue);
   });
 }
 
-export function run(fn, q, options) {
+export function run(fn, q, memo, options, callback) {
   if (!q) {
     return new Error('q is not provided');
   }
 
   if (q[0] === 'undefined') {
-    return;
+    return callback(null, memo);
   }
-
-  fn({ url: `${options.alisEndpoint}/alis/EK/${q[0]}`, jar: options.jar }, (err, nextPageUrl) => {
+  fn(memo, q, { url: `${options.alisEndpoint}/alis/EK/${q[0]}`, jar: options.jar }, (err, nextMemo, nextQ) => {
     if (err) {
       return err;
     }
+    console.log('memo.length: ', memo.length);
+    console.log('nextQ.length: ', nextQ.length);
+    run(fn, nextQ, memo, options, callback);
+  });
+}
 
-    const remainingQueue = q.slice(1);
-    if (q.length === 1) {
-      remainingQueue.push(`${nextPageUrl}`);
+export function getBooksByYear(year, type, callback) {
+  console.log('year: ', year, 'type: ', type);
+  const initParams = {
+    query: year,
+    alisEndpoint: 'http://86.57.174.45',
+    tema: type,
+    tag: 6,
+  };
+
+  sendInitialQuery(initParams, (err, res) => {
+    if (err) {
+      return new Error(err);
+    }
+    const options = {
+      alisEndpoint: initParams.alisEndpoint,
+      jar: res.jar,
+    };
+    const $ = parsePage(res.page);
+    const firstNumberedPageUrls = getNumberedPageUrls($);
+    const remainingQueue = firstNumberedPageUrls;
+    run(processItems, remainingQueue, [], options, (runErr, memo) => {
+      if (err) {
+        return callback(err);
+      }
+      callback(null, memo);
+    });
+  });
+}
+
+export function getBooks(initParams) {
+  const ReadableStreamItems = new Stream.Readable({ objectMode: true });
+  /* This is a temporary solution _read = () => {}, that will be changed */
+  ReadableStreamItems._read = () => {};
+
+  sendInitialQuery(initParams, (error, res) => {
+    if (error) {
+      return new Error(error);
     }
 
-    run(fn, remainingQueue, options);
+    const options = {
+      alisEndpoint: initParams.alisEndpoint,
+      jar: res.jar,
+    };
+
+    const $ = parsePage(res.page);
+    const firstNumberedPageUrls = getNumberedPageUrls($);
+
+    const getItemsCallback = (err, items) => err ? new Error(err) : ReadableStreamItems.push(items);
+
+    run(processItems, firstNumberedPageUrls, options, getItemsCallback);
   });
+
+  return ReadableStreamItems;
 }
