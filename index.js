@@ -1,13 +1,15 @@
 import request from 'request';
 import cheerio from 'cheerio';
 
-export function sendInitialQuery(query, callback) {
-  if (!query.year) {
-    return process.nextTick(callback, new Error('query.year is not provided'));
+export function sendInitialQuery(params, callback) {
+  if (!params.query) {
+    return process.nextTick(callback, new Error('params is not provided'));
   }
 
   const j = request.jar();
-  const INITIAL_URL = `${query.alisEndpoint}/alis/EK/do_searh.php?radiodate=simple&valueINP=${query.year}&tema=1&tag=6`;
+  const alisEndpoint = `${params.alisEndpoint}`;
+const firstPageUrl = `/alis/EK/do_searh.php?radiodate=simple&valueINP=${encodeURIComponent(params.query)}&tema=${params.tema}&tag=${params.tag}`
+const INITIAL_URL = `${alisEndpoint}${firstPageUrl}`;
 
   request({ url: INITIAL_URL, jar: j }, (err, response, body) => {
     if (err) {
