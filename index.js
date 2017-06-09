@@ -79,37 +79,43 @@ export function parsePage(body) {
   return $;
 }
 
-export function processItems(options, callback) {
+export function processItems(memo, q, options, callback) {
   if (!options) {
     return process.nextTick(callback, new Error('options is not provided'));
   }
 
   getPage({ url: options.url, jar: options.jar }, (err, body) => {
+    if (err) return callback(err);
     const $ = parsePage(body);
+
+    const items = getItemsId($);
+
     const nextPageUrl = getNextPageUrl($);
-    callback(null, nextPageUrl);
+    const remainingQueue = q.slice(1);
+    if (q.length === 1) {
+      remainingQueue.push(`${nextPageUrl}`);
+    }
+    items.forEach((item) => {
+      memo.push(item);
+    });
+    callback(null, memo, remainingQueue);
   });
 }
 
-export function run(fn, q, options) {
+export function run(fn, q, memo, options, callback) {
   if (!q) {
     return new Error('q is not provided');
   }
 
   if (q[0] === 'undefined') {
-    return;
+    return callback(null, memo);
   }
-
-  fn({ url: `${options.alisEndpoint}/alis/EK/${q[0]}`, jar: options.jar }, (err, nextPageUrl) => {
+  fn(memo, q, { url: `${options.alisEndpoint}/alis/EK/${q[0]}`, jar: options.jar }, (err, nextMemo, nextQ) => {
     if (err) {
       return err;
     }
-
-    const remainingQueue = q.slice(1);
-    if (q.length === 1) {
-      remainingQueue.push(`${nextPageUrl}`);
-    }
-
-    run(fn, remainingQueue, options);
+    console.log('memo.length: ', memo.length);
+    console.log('nextQ.length: ', nextQ.length);
+    run(fn, nextQ, memo, options, callback);
   });
 }
