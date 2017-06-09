@@ -57,6 +57,17 @@ export function getItems($) {
   return items;
 }
 
+
+export function getItemsId($) {
+  const items = $('.article').map(function (i, el) {
+    return {
+      id: $(el).attr('id'),
+    };
+  }).toArray();
+  return items;
+
+}
+
 export function getNumberedPageUrls($) {
   const pageLinks = $('a[href^=\'do_other\']');
   const relativePageUrls = $(pageLinks).map((i, link) => $(link).attr('href').replace(/\r|\n/g, '')).toArray();
