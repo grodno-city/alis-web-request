@@ -4,8 +4,17 @@ import cheerio from 'cheerio';
 import queryMap from './queryMap.json'
 
 export function sendInitialQuery(params, callback) {
+  if (!params) {
+    return callback(new Error('params is not provided'));
+  }
   if (!params.query) {
-    return process.nextTick(callback, new Error('params is not provided'));
+    return callback(new Error('query string is not provided'));
+  }
+  if (!params.queryType) {
+    return callback(new Error('queryType string is not provided'));
+  }
+  if (!params.recordType) {
+    return callback(new Error('recordType string is not provided'));
   }
   const j = request.jar();
   const alisEndpoint = `${params.alisEndpoint}`;
@@ -14,8 +23,7 @@ export function sendInitialQuery(params, callback) {
 
   request({ url: INITIAL_URL, jar: j }, (err, response, body) => {
     if (err) {
-      callback(err);
-      return;
+      return callback(err);
     }
     callback(null, { page: body, jar: j });
   });
@@ -106,7 +114,7 @@ export function run(fn, q, memo, options, callback) {
   }
   fn(memo, q, { url: `${options.alisEndpoint}/alis/EK/${q[0]}`, jar: options.jar }, (err, nextMemo, nextQ) => {
     if (err) {
-      return err;
+      return callback(err);
     }
     console.log('memo.length: ', memo.length);
     console.log('nextQ.length: ', nextQ.length);
@@ -118,12 +126,15 @@ export function getRecordsByQuery(initParams, callback) {
 
   sendInitialQuery(initParams, (err, res) => {
     if (err) {
-      return new Error(err);
+      return callback(err);
     }
     const options = {
       alisEndpoint: initParams.alisEndpoint,
       jar: res.jar,
     };
+    if(res.page.match('Не результативный поиск')){
+      return callback(new Error('no match'));
+    }
     const $ = parsePage(res.page);
     const firstNumberedPageUrls = getNumberedPageUrls($);
     const remainingQueue = firstNumberedPageUrls;
