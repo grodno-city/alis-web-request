@@ -105,8 +105,6 @@ export function run(fn, q, memo, options, callback) {
     if (err) {
       return callback(err);
     }
-    console.log('memo.length: ', memo.length);
-    console.log('nextQ.length: ', nextQ.length);
     run(fn, nextQ, memo, options, callback);
   });
 }
