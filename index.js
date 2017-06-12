@@ -1,7 +1,7 @@
+import querystring from 'querystring';
 import request from 'request';
 import cheerio from 'cheerio';
-
-import queryMap from './queryMap.json'
+import queryMap from './queryMap.json';
 
 export function sendInitialQuery(params, callback) {
   if (!params) {
@@ -18,7 +18,13 @@ export function sendInitialQuery(params, callback) {
   }
   const j = request.jar();
   const alisEndpoint = `${params.alisEndpoint}`;
-  const firstPageUrl = `/alis/EK/do_searh.php?radiodate=simple&valueINP=${encodeURIComponent(params.query)}&tema=${queryMap.recordType[params.recordType]}&tag=${queryMap.queryType[params.queryType]}`
+  const qs = querystring.stringify({
+    radiodate: 'simple',
+    valueINP: encodeURIComponent(params.query),
+    tema: queryMap.recordType[params.recordType],
+    tag: queryMap.queryType[params.queryType],
+  });
+  const firstPageUrl = `/alis/EK/do_searh.php?${qs}`;
   const INITIAL_URL = `${alisEndpoint}${firstPageUrl}`;
 
   request({ url: INITIAL_URL, jar: j }, (err, response, body) => {
