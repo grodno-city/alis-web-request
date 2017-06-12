@@ -5,16 +5,16 @@ import queryMap from './queryMap.json';
 
 export function sendInitialQuery(params, callback) {
   if (!params) {
-    return callback(new Error('params is not provided'));
+    return process.nextTick(callback, new Error('params is not provided'));
   }
   if (!params.query) {
-    return callback(new Error('query string is not provided'));
+    return process.nextTick(callback, new Error('query string is not provided'));
   }
   if (!params.queryType) {
-    return callback(new Error('queryType string is not provided'));
+    return process.nextTick(callback, new Error('queryType string is not provided'));
   }
   if (!params.recordType) {
-    return callback(new Error('recordType string is not provided'));
+    return process.nextTick(callback, new Error('recordType string is not provided'));
   }
   const j = request.jar();
   const alisEndpoint = `${params.alisEndpoint}`;
