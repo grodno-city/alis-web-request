@@ -16,8 +16,13 @@ describe('sendInitialQuery', () => {
       .reply(200, '<html></html>', {
         'Set-Cookie': 'sessionalis=ra2lme8ap38rd2dt8o2dqo7vs1',
       });
-
-    sendInitialQuery({ year: 2016, alisEndpoint }, (err, result) => {
+    const initParams = {
+      query: 2016,
+      alisEndpoint: 'http://86.57.174.45',
+      recordType: "Книги",
+      queryType: "Год издания",
+    };
+    sendInitialQuery(initParams, (err, result) => {
       expect(result.page).to.equal('<html></html>');
       done();
     });
@@ -32,8 +37,13 @@ describe('sendInitialQuery', () => {
       .reply(200, '<html></html>', {
         'Set-Cookie': 'sessionalis=ra2lme8ap38rd2dt8o2dqo7vs1',
       });
-
-    sendInitialQuery({ year: 2016, alisEndpoint }, (err, result) => {
+    const initParams = {
+      query: 2016,
+      alisEndpoint: 'http://86.57.174.45',
+      recordType: "Книги",
+      queryType: "Год издания",
+    };
+    sendInitialQuery(initParams, (err, result) => {
       const cookies = result.jar.getCookieString(`${alisEndpoint}${firstPageUrl}`).replace('=', ' ').split(' ');
       const key = 'sessionalis';
       const value = 'ra2lme8ap38rd2dt8o2dqo7vs1';
