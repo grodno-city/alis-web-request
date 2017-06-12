@@ -1,9 +1,4 @@
-import Stream from 'stream';
-import { sendInitialQuery, getNumberedPageUrls, run, processItems, parsePage, ReadableStreamItems } from './index';
-
-const WritableStreamItems = new Stream.Writable({ objectMode: true });
-
-ReadableStreamItems.pipe(WritableStreamItems);
+import { sendInitialQuery, getNumberedPageUrls, run, processItems, parsePage } from './index';
 
 const initParams = {
   year: 2017,
@@ -26,8 +21,3 @@ sendInitialQuery(initParams, (err, res) => {
 });
 
 const items = [];
-
-WritableStreamItems._write = (item, encoding, done) => {
-  items.push(item);
-  done();
-};
