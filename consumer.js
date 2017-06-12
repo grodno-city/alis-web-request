@@ -1,8 +1,10 @@
 import { sendInitialQuery, getNumberedPageUrls, run, processItems, parsePage } from './index';
 
 const initParams = {
-  year: 2017,
+  query: '1930',
   alisEndpoint: 'http://86.57.174.45',
+  recordType: "Книги",
+  queryType: "Год издания",
 };
 
 sendInitialQuery(initParams, (err, res) => {
