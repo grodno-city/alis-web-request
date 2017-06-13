@@ -4,8 +4,8 @@ import cheerio from 'cheerio';
 import queryMap from './queryMap.json';
 
 export function sendInitialQuery(params, callback) {
-  if (!params) {
-    return process.nextTick(callback, new Error('params is not provided'));
+  if (!params.alisEndpoint) {
+    return process.nextTick(callback, new Error('alisEndpoint is not provided'));
   }
   if (!params.query) {
     return process.nextTick(callback, new Error('query string is not provided'));
