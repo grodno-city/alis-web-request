@@ -19,8 +19,8 @@ describe('sendInitialQuery', () => {
     const initParams = {
       query: 2016,
       alisEndpoint: 'http://86.57.174.45',
-      recordType: "Книги",
-      queryType: "Год издания",
+      recordType: 'Книги',
+      queryType: 'Год издания',
     };
     sendInitialQuery(initParams, (err, result) => {
       expect(result.page).to.equal('<html></html>');
@@ -40,8 +40,8 @@ describe('sendInitialQuery', () => {
     const initParams = {
       query: 2016,
       alisEndpoint: 'http://86.57.174.45',
-      recordType: "Книги",
-      queryType: "Год издания",
+      recordType: 'Книги',
+      queryType: 'Год издания',
     };
     sendInitialQuery(initParams, (err, result) => {
       const cookies = result.jar.getCookieString(`${alisEndpoint}${firstPageUrl}`).replace('=', ' ').split(' ');
@@ -54,9 +54,9 @@ describe('sendInitialQuery', () => {
   });
   it('should error when alisEndpoint is not provided', (done) => {
     const initParams = {
-      query:2016,
-      recordType: "Книги",
-      queryType: "Год издания",
+      query: 2016,
+      recordType: 'Книги',
+      queryType: 'Год издания',
     };
     sendInitialQuery(initParams, (err) => {
       expect(err.message).to.equal('alisEndpoint is not provided');
@@ -66,8 +66,8 @@ describe('sendInitialQuery', () => {
   it('should error when query string is not provided', (done) => {
     const initParams = {
       alisEndpoint: 'http://86.57.174.45',
-      recordType: "Книги",
-      queryType: "Год издания",
+      recordType: 'Книги',
+      queryType: 'Год издания',
     };
     sendInitialQuery(initParams, (err) => {
       expect(err.message).to.equal('query string is not provided');
@@ -78,7 +78,7 @@ describe('sendInitialQuery', () => {
     const initParams = {
       query: 2016,
       alisEndpoint: 'http://86.57.174.45',
-      recordType: "Книги",
+      recordType: 'Книги',
     };
     sendInitialQuery(initParams, (err) => {
       expect(err.message).to.equal('queryType string is not provided');
@@ -89,7 +89,7 @@ describe('sendInitialQuery', () => {
     const initParams = {
       query: 2016,
       alisEndpoint: 'http://86.57.174.45',
-      queryType: "Год издания",
+      queryType: 'Год издания',
     };
     sendInitialQuery(initParams, (err) => {
       expect(err.message).to.equal('recordType string is not provided');

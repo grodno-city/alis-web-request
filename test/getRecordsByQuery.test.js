@@ -10,8 +10,8 @@ describe('getRecordsByQuery', () => {
     const initParams = {
       query: 'wrong query',
       alisEndpoint: 'http://86.57.174.45',
-      recordType: "Книги",
-      queryType: "Год издания",
+      recordType: 'Книги',
+      queryType: 'Год издания',
     };
     const alisEndpoint = 'http://86.57.174.45';
     const firstPageUrl = '/alis/EK/do_searh.php?radiodate=simple&valueINP=wrong%2520query&tema=1&tag=6';
