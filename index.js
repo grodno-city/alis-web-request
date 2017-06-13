@@ -1,21 +1,35 @@
+import querystring from 'querystring';
 import request from 'request';
 import cheerio from 'cheerio';
-
-import queryMap from './queryMap.json'
+import queryMap from './queryMap.json';
 
 export function sendInitialQuery(params, callback) {
-  if (!params.query) {
+  if (!params) {
     return process.nextTick(callback, new Error('params is not provided'));
+  }
+  if (!params.query) {
+    return process.nextTick(callback, new Error('query string is not provided'));
+  }
+  if (!params.queryType) {
+    return process.nextTick(callback, new Error('queryType string is not provided'));
+  }
+  if (!params.recordType) {
+    return process.nextTick(callback, new Error('recordType string is not provided'));
   }
   const j = request.jar();
   const alisEndpoint = `${params.alisEndpoint}`;
-  const firstPageUrl = `/alis/EK/do_searh.php?radiodate=simple&valueINP=${encodeURIComponent(params.query)}&tema=${queryMap.recordType[params.recordType]}&tag=${queryMap.queryType[params.queryType]}`
+  const qs = querystring.stringify({
+    radiodate: 'simple',
+    valueINP: encodeURIComponent(params.query),
+    tema: queryMap.recordType[params.recordType],
+    tag: queryMap.queryType[params.queryType],
+  });
+  const firstPageUrl = `/alis/EK/do_searh.php?${qs}`;
   const INITIAL_URL = `${alisEndpoint}${firstPageUrl}`;
 
   request({ url: INITIAL_URL, jar: j }, (err, response, body) => {
     if (err) {
-      callback(err);
-      return;
+      return callback(err);
     }
     callback(null, { page: body, jar: j });
   });
@@ -51,17 +65,6 @@ export function getItems($) {
   return items;
 }
 
-
-export function getItemsId($) {
-  const items = $('.article').map(function (i, el) {
-    return {
-      id: $(el).attr('id'),
-    };
-  }).toArray();
-  return items;
-
-}
-
 export function getNumberedPageUrls($) {
   const pageLinks = $('a[href^=\'do_other\']');
   const relativePageUrls = $(pageLinks).map((i, link) => $(link).attr('href').replace(/\r|\n/g, '')).toArray();
@@ -82,7 +85,7 @@ export function processItems(memo, q, options, callback) {
     if (err) return callback(err);
     const $ = parsePage(body);
 
-    const items = getItemsId($);
+    const items = getItems($);
 
     const nextPageUrl = getNextPageUrl($);
     const remainingQueue = q.slice(1);
@@ -106,10 +109,8 @@ export function run(fn, q, memo, options, callback) {
   }
   fn(memo, q, { url: `${options.alisEndpoint}/alis/EK/${q[0]}`, jar: options.jar }, (err, nextMemo, nextQ) => {
     if (err) {
-      return err;
+      return callback(err);
     }
-    console.log('memo.length: ', memo.length);
-    console.log('nextQ.length: ', nextQ.length);
     run(fn, nextQ, memo, options, callback);
   });
 }
@@ -118,12 +119,15 @@ export function getRecordsByQuery(initParams, callback) {
 
   sendInitialQuery(initParams, (err, res) => {
     if (err) {
-      return new Error(err);
+      return callback(err);
     }
     const options = {
       alisEndpoint: initParams.alisEndpoint,
       jar: res.jar,
     };
+    if(res.page.match('Не результативный поиск')){
+      return callback(new Error('no match'));
+    }
     const $ = parsePage(res.page);
     const firstNumberedPageUrls = getNumberedPageUrls($);
     const remainingQueue = firstNumberedPageUrls;
