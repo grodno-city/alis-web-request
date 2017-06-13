@@ -11,7 +11,7 @@
     "update-test-fixtures": "babel-node --presets es2015 ./test/scripts/update-results-fixtures.js",
     "lint": "eslint index.js",
     "prepublish": "babel index.js --presets babel-preset-es2015 --out-dir lib",
-    "update-query-mapping" : "babel-node --presets es2015 ./scripts/update-query-mapping.js"
+    "update-query-mapping": "babel-node --presets es2015 ./bin/update-query-mapping.js"
   },
   "dependencies": {
     "cheerio": "0.22.0",
