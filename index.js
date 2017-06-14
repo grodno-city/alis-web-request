@@ -8,13 +8,13 @@ export function sendInitialQuery(params, callback) {
     return process.nextTick(callback, new Error('alisEndpoint is not provided'));
   }
   if (!params.query) {
-    return process.nextTick(callback, new Error('query string is not provided'));
+    return process.nextTick(callback, new Error('query is not provided'));
   }
   if (!params.queryType) {
-    return process.nextTick(callback, new Error('queryType string is not provided'));
+    return process.nextTick(callback, new Error('queryType is not provided'));
   }
   if (!params.recordType) {
-    return process.nextTick(callback, new Error('recordType string is not provided'));
+    return process.nextTick(callback, new Error('recordType is not provided'));
   }
   const j = request.jar();
   const alisEndpoint = `${params.alisEndpoint}`;
