@@ -34,4 +34,3 @@ describe('getNextPageUrl', () => {
     expect(nextPageUrl).to.eql(undefined);
   });
 });
-
