@@ -63,36 +63,36 @@ describe('sendInitialQuery', () => {
       done();
     });
   });
-  it('should error when query string is not provided', (done) => {
+  it('should error when query is not provided', (done) => {
     const initParams = {
       alisEndpoint: 'http://86.57.174.45',
       recordType: 'Книги',
       queryType: 'Год издания',
     };
     sendInitialQuery(initParams, (err) => {
-      expect(err.message).to.equal('query string is not provided');
+      expect(err.message).to.equal('query is not provided');
       done();
     });
   });
-  it('should error when queryType string is not provided', (done) => {
+  it('should error when queryType is not provided', (done) => {
     const initParams = {
       query: 2016,
       alisEndpoint: 'http://86.57.174.45',
       recordType: 'Книги',
     };
     sendInitialQuery(initParams, (err) => {
-      expect(err.message).to.equal('queryType string is not provided');
+      expect(err.message).to.equal('queryType is not provided');
       done();
     });
   });
-  it('should error when recordType string is not provided', (done) => {
+  it('should error when recordType is not provided', (done) => {
     const initParams = {
       query: 2016,
       alisEndpoint: 'http://86.57.174.45',
       queryType: 'Год издания',
     };
     sendInitialQuery(initParams, (err) => {
-      expect(err.message).to.equal('recordType string is not provided');
+      expect(err.message).to.equal('recordType is not provided');
       done();
     });
   });
