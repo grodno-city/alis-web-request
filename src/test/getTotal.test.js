@@ -2,7 +2,7 @@ import cheerio from 'cheerio';
 import fs from 'fs';
 import { join } from 'path';
 import { expect } from 'chai';
-import { getTotal } from '../src/index';
+import { getTotal } from '../index';
 
 const shortResultsHtml = fs.readFileSync(join(__dirname, 'fixtures/short-results.html'));
 const longResultsHtml = fs.readFileSync(join(__dirname, 'fixtures/long-results.html'));

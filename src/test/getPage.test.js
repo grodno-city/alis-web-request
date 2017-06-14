@@ -1,7 +1,7 @@
 import nock from 'nock';
 import request from 'request';
 import { expect } from 'chai';
-import { getPage } from '../src/index';
+import { getPage } from '../index';
 
 describe('getPage', () => {
   it('should be a function', () => {

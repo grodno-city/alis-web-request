@@ -1,6 +1,6 @@
 import nock from 'nock';
 import { expect } from 'chai';
-import { getRecordsByQuery } from '../src/index';
+import { getRecordsByQuery } from '../index';
 
 describe('getRecordsByQuery', () => {
   it('should be a function', () => {

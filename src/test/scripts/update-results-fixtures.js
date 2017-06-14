@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { sendInitialQuery } from '../../src/index';
+import { sendInitialQuery } from '../../index';
 
 function writeLongResult(err, result) {
   if (err) {
