@@ -2,7 +2,7 @@ import cheerio from 'cheerio';
 import fs from 'fs';
 import { expect } from 'chai';
 import { join } from 'path';
-import { getNumberedPageUrls } from '../index';
+import { getNumberedPageUrls } from '../src/index';
 
 const longResultsHtml = fs.readFileSync(join(__dirname, 'fixtures/long-results.html'));
 

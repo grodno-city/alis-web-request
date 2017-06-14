@@ -1,6 +1,6 @@
 import nock from 'nock';
 import { expect } from 'chai';
-import { sendInitialQuery } from '../index';
+import { sendInitialQuery } from '../src/index';
 
 describe('sendInitialQuery', () => {
   it('should be a function', () => {
