@@ -7,10 +7,10 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon --exec babel-node -- ./consumer.js",
-    "test": "mocha --compilers js:babel-core/register",
+    "test": "mocha --compilers js:babel-core/register ./src/test/*.test.js",
     "update-test-fixtures": "babel-node --presets es2015 ./test/scripts/update-results-fixtures.js",
     "lint": "eslint index.js",
-    "prepublish": "babel --out-dir lib --copy-files src",
+    "prepublish": "babel --out-dir lib --copy-files src --ignore test/*",
     "update-query-mapping": "babel-node bin/update-query-mapping.js > queryMap.json"
   },
   "dependencies": {
