@@ -15,6 +15,6 @@ request({ url: 'http://86.57.174.45/pls/alis/EK/simple.php' }, (err, res, body) 
   const recordTypes = getTypes($, 'tema');
   const queryTypes = getTypes($, 'tag');
   const qM = { recordType: recordTypes, queryType: queryTypes };
-  const str = JSON.stringify(qM);
+  const str = JSON.stringify(qM, null, 2);
   process.stdout.write(str);
 });
