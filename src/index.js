@@ -3,6 +3,8 @@ import request from 'request';
 import cheerio from 'cheerio';
 import queryMap from './queryMap.json';
 
+export const recordType = queryMap.recordType;
+
 export function sendInitialQuery(params, callback) {
   if (!params.alisEndpoint) {
     return process.nextTick(callback, new Error('alisEndpoint is not provided'));
