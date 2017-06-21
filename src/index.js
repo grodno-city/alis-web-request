@@ -127,7 +127,7 @@ export function getRecordsByQuery(initParams, callback) {
       alisEndpoint: initParams.alisEndpoint,
       jar: res.jar,
     };
-    if(res.page.match('Не результативный поиск')){
+    if (res.page.match('Не результативный поиск')) {
       return callback(new Error('no match'));
     }
     const $ = parsePage(res.page);
