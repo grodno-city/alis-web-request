@@ -2,6 +2,7 @@ import querystring from 'querystring';
 import request from 'request';
 import cheerio from 'cheerio';
 import queryMap from './queryMap.json';
+import cheerioTableparser from'cheerio-tableparser';
 
 export const recordTypes = queryMap.recordType;
 
@@ -118,7 +119,6 @@ export function run(fn, q, memo, options, callback) {
 }
 
 export function getRecordsByQuery(initParams, callback) {
-
   sendInitialQuery(initParams, (err, res) => {
     if (err) {
       return callback(err);
@@ -127,7 +127,7 @@ export function getRecordsByQuery(initParams, callback) {
       alisEndpoint: initParams.alisEndpoint,
       jar: res.jar,
     };
-    if(res.page.match('Не результативный поиск')){
+    if (res.page.match('Не результативный поиск')) {
       return callback(new Error('no match'));
     }
     const $ = parsePage(res.page);
@@ -139,5 +139,44 @@ export function getRecordsByQuery(initParams, callback) {
       }
       callback(null, memo);
     });
+  });
+}
+
+export function getRecordInfo($) {
+  cheerioTableparser($);
+  const data = $('table').parsetable(false, false, true);
+  const info = {};
+  for (let i = 0; i < data[0].length; i++) {
+    if (data[0][i] === 'Фонд') info[data[0][i]] = {};
+    else if (data[0][i] === 'Ссылки на др. биб.записи') {
+      info.tags = [];
+      for (let j = i + 1; j < data[0].length; j++) {
+        let str = data[0][j].split('*');
+        info.tags = info.tags.concat(str);
+      }
+      break;
+    }
+    else if (data[0][i].match('фондир')) {
+      info['Фонд'][data[0][i]] = data[1][i];
+    }
+    else if (data[0][i] === 'ISBN'){
+      info[data[0][i]] = data[1][i].split(', ');
+    }
+    else info[data[0][i]] = data[1][i];
+  }
+  delete info['Название'];
+  return info;
+}
+
+export function getRecordByID(alisEndpoint, id, callback) {
+  const firstPageUrl = `/alis/EK/do_view.php?id=${id}`;
+  const INITIAL_URL = `${alisEndpoint}${firstPageUrl}`;
+  getPage({ url: INITIAL_URL }, (err, body) => {
+    if (err) return callback(err);
+    if (body.match('Undefined variable')) return callback(new Error('Record not found'))
+    const $ = parsePage(body);
+    const info = getRecordInfo($);
+    info.id = id;
+    return callback(null, info);
   });
 }
