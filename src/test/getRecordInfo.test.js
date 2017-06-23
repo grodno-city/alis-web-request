@@ -44,5 +44,16 @@ describe('getRecordInfo', () => {
     const $ = cheerio.load(record);
     const info = getRecordInfo($);
     expect(info.tags.length).to.equal(5);
-  })
+  });
+  it('should put data with empty key in unknown fiels', () => {
+    const $ = cheerio.load(record);
+    const info = getRecordInfo($);
+    expect(info.unknown.length).to.equal(1);
+  });
+  it('should remove " ." from all field', () => {
+    const $ = cheerio.load(record);
+    const info = getRecordInfo($);
+    expect(info['Сведения,относящиеся к заглавию']).to.be.a('string');
+    expect(info['Первые сведения об ответствен.']).to.equal('Фридрих Незнанский');
+  });
 });
