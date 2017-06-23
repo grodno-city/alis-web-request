@@ -137,6 +137,9 @@ export function getRecordsByQuery(initParams, callback) {
       if (err) {
         return callback(err);
       }
+      if (memo === undefined) {
+        return callback(new Error('alis-web error'));
+      }
       callback(null, memo);
     });
   });
