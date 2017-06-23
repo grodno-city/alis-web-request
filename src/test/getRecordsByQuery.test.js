@@ -26,24 +26,4 @@ describe('getRecordsByQuery', () => {
       done();
     });
   });
-  it('should return "alis-web error" if memo undefined', (done) => {
-    const initParams = {
-      query: 'wrong query',
-      alisEndpoint: 'http://86.57.174.45',
-      recordType: 'Книги',
-      queryType: 'Год издания',
-    };
-    const alisEndpoint = 'http://86.57.174.45';
-    const firstPageUrl = '/alis/EK/do_searh.php?radiodate=simple&valueINP=wrong%2520query&tema=1&tag=6';
-
-    nock(alisEndpoint)
-      .get(firstPageUrl)
-      .reply(200, '<html> </html>', {
-        'Set-Cookie': 'sessionalis=ra2lme8ap38rd2dt8o2dqo7vs1',
-      });
-    getRecordsByQuery(initParams, (err, memo) => {
-      expect(err.message).to.equal('alis-web error');
-      done();
-    });
-  });
 });
