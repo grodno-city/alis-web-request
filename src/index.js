@@ -146,7 +146,16 @@ export function getRecordInfo($) {
   cheerioTableparser($);
   const data = $('table').parsetable(false, false, true);
   const info = {};
+  info.unknown = [];
   for (let i = 0; i < data[0].length; i++) {
+    if (data[0][i].endsWith(' .')) {
+      data[0][i] = data[0][i].slice(0, data[0][i].length - 2);
+    }
+    if (data[1][i] !== undefined) {
+      if (data[1][i].endsWith(' .')) {
+        data[1][i] = data[1][i].slice(0, data[1][i].length - 2);
+      }
+    }
     if (data[0][i] === 'Фонд') info[data[0][i]] = {};
     else if (data[0][i] === 'Ссылки на др. биб.записи') {
       info.tags = [];
@@ -159,8 +168,11 @@ export function getRecordInfo($) {
     else if (data[0][i].match('фондир')) {
       info['Фонд'][data[0][i]] = data[1][i];
     }
-    else if (data[0][i] === 'ISBN'){
+    else if (data[0][i] === 'ISBN') {
       info[data[0][i]] = data[1][i].split(', ');
+    }
+    else if (data[0][i] === '') {
+      info.unknown.push(data[1][i]);
     }
     else info[data[0][i]] = data[1][i];
   }
