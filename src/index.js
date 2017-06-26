@@ -141,7 +141,6 @@ export function getRecordsByQuery(initParams, callback) {
       if (err) {
         return callback(err);
       }
-      }
       callback(null, memo);
     });
   });
