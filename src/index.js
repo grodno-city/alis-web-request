@@ -89,7 +89,9 @@ export function processItems(memo, q, options, callback) {
     const $ = parsePage(body);
 
     const items = getItems($);
-
+    if (items.length === 0) {
+      return callback(new Error('alis-web error'));
+    }
     const nextPageUrl = getNextPageUrl($);
     const remainingQueue = q.slice(1);
     if (q.length === 1) {
@@ -137,8 +139,6 @@ export function getRecordsByQuery(initParams, callback) {
       if (err) {
         return callback(err);
       }
-      if (memo === undefined) {
-        return callback(new Error('alis-web error'));
       }
       callback(null, memo);
     });
