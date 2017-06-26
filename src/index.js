@@ -142,39 +142,82 @@ export function getRecordsByQuery(initParams, callback) {
   });
 }
 
+export function fixUnIndexedString(data) {
+  const newData = data.map((colum) => {
+    return colum.map((el) => {
+      if (el !== undefined && el.endsWith(' .')) {
+        return el.slice(0, el.length - 2);
+      }
+      return el;
+    })
+  });
+  return newData;
+}
+
+export function collectUnknownField(data) {
+  if (!data[0].includes('')) return;
+  const unknown = [];
+  data[0].forEach((el, index) => {
+    if (el === '') {
+      unknown.push(data[1][index]);
+    }
+  });
+  return unknown;
+}
+
+export function collectTags(data) {
+  let tags = [];
+  if (data[0][0] === 'Ссылки на др. биб.записи') {
+    for (let j = 1; j < data[0].length; j += 1) {
+      const str = data[0][j].split('*');
+      tags = tags.concat(str);
+    }
+  }
+  return tags;
+}
+
+export function collectFund(data) {
+  const fund = {};
+  for (let i = 0; i < data[0].length; i += 1) {
+    if (data[0][i].match('фондир')) {
+      fund[data[0][i]] = data[1][i];
+    }
+  }
+  return fund;
+}
+
 export function getRecordInfo($) {
   cheerioTableparser($);
-  const data = $('table').parsetable(false, false, true);
   const info = {};
-  info.unknown = [];
-  for (let i = 0; i < data[0].length; i++) {
-    if (data[0][i].endsWith(' .')) {
-      data[0][i] = data[0][i].slice(0, data[0][i].length - 2);
-    }
-    if (data[1][i] !== undefined) {
-      if (data[1][i].endsWith(' .')) {
-        data[1][i] = data[1][i].slice(0, data[1][i].length - 2);
+  let firstTable = $('table').first().parsetable(false, false, true);
+  firstTable = fixUnIndexedString(firstTable);
+  for (let i = 0; i < firstTable[0].length; i++) {
+    if (firstTable[0][i] !== '') {
+      if (firstTable[0][i] === 'ISBN') {
+        info[firstTable[0][i]] = firstTable[1][i].split(', ');
       }
+      info[firstTable[0][i]] = firstTable[1][i];
     }
-    if (data[0][i] === 'Фонд') info[data[0][i]] = {};
-    else if (data[0][i] === 'Ссылки на др. биб.записи') {
-      info.tags = [];
-      for (let j = i + 1; j < data[0].length; j++) {
-        let str = data[0][j].split('*');
-        info.tags = info.tags.concat(str);
-      }
-      break;
+  }
+  const unknown = collectUnknownField(firstTable);
+  if (unknown !== undefined) info.unknown = unknown;
+
+  const secondTable = $('table').first().next('table');
+  if (secondTable) {
+    let second = secondTable.parsetable(false, false, true);
+    second = fixUnIndexedString(second);
+    if (second[0][0] === 'Фонд') {
+      info['Фонд'] = collectFund(second);
+    } else {
+      info.tags = collectTags(second);
     }
-    else if (data[0][i].match('фондир')) {
-      info['Фонд'][data[0][i]] = data[1][i];
-    }
-    else if (data[0][i] === 'ISBN') {
-      info[data[0][i]] = data[1][i].split(', ');
-    }
-    else if (data[0][i] === '') {
-      info.unknown.push(data[1][i]);
-    }
-    else info[data[0][i]] = data[1][i];
+  }
+
+  const thirdTable = $('table').first().next('table').next('table');
+  if (thirdTable) {
+    let tags = thirdTable.parsetable(false, false, true);
+    tags = fixUnIndexedString(tags);
+    info.tags = collectTags(tags);
   }
   delete info['Название'];
   return info;
