@@ -89,7 +89,13 @@ export function processItems(memo, q, options, callback) {
     const $ = parsePage(body);
 
     const items = getItems($);
-
+    /* Sometime alis-web return page with frame which refused to connect
+    without any error message or code */
+    if (items.length === 0) {
+      const frameRefused = new Error('Frame refused to connect');
+      frameRefused.code = 'ECONNREFUSED';
+      return callback(frameRefused);
+    }
     const nextPageUrl = getNextPageUrl($);
     const remainingQueue = q.slice(1);
     if (q.length === 1) {
