@@ -2,7 +2,7 @@ import querystring from 'querystring';
 import request from 'request';
 import cheerio from 'cheerio';
 import queryMap from './queryMap.json';
-import cheerioTableparser from'cheerio-tableparser';
+import cheerioTableparser from 'cheerio-tableparser';
 
 export const recordTypes = queryMap.recordType;
 
@@ -195,8 +195,7 @@ export function getRecordInfo($) {
     if (firstTable[0][i] !== '') {
       if (firstTable[0][i] === 'ISBN') {
         info[firstTable[0][i]] = firstTable[1][i].split(', ');
-      }
-      info[firstTable[0][i]] = firstTable[1][i];
+      } else info[firstTable[0][i]] = firstTable[1][i];
     }
   }
   const unknown = collectUnknownField(firstTable);
