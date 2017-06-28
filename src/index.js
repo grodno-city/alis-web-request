@@ -148,7 +148,7 @@ export function collectReferences(table) {
   data.forEach((el) => {
     const a = el.children[0].children[0];
     references.push({
-      tag: a.attribs.onclick.match(/[0-9]+/)[0],
+      tag: Number(a.attribs.onclick.match(/[0-9]+/)[0]),
       value: a.children[0].data,
     });
   });
@@ -162,23 +162,23 @@ export function collectFunds(table) {
   data.forEach((el) => {
     funds.push({
       name: el.children[0].children[0].children[0].data,
-      count: el.children[1].children[0].data,
+      count: Number(el.children[1].children[0].data),
     });
   });
   return funds;
 }
 
-export function collectInfo(table) {
-  const tags = [];
+export function collectFields(table) {
+  const fields = [];
   const data = table.children().toArray();
   data.shift();
   data.forEach((el) => {
-    tags.push({
+    fields.push({
       tag: el.children[0].children[0].children[0].data,
-      field: el.children[1].children[0].data,
+      value: el.children[1].children[0].data,
     });
   });
-  return tags;
+  return fields;
 }
 
 export function collectYears(table) {
@@ -187,14 +187,14 @@ export function collectYears(table) {
   data.shift();
   data.forEach((el) => {
     const a = el.children[0].children[0];
-    references.push(a.children[0].data.substr(0, 4));
+    references.push(Number(a.children[0].data.substr(0, 4)));
   });
   return references;
 }
 
 export function getRecordInfo($) {
   const info = {};
-  info.belmarcId = $('span')[0].children[0].data;
+  info.belmarcId = $('span')[0].children[0].data.substr(4);
 
   $('table').each((i, table) => {
     const $table = $(table);
@@ -208,7 +208,7 @@ export function getRecordInfo($) {
         info.references = collectReferences($table);
         break;
       case 'Название':
-        info.tags = collectInfo($table);
+        info.fields = collectFields($table);
         break;
       case 'Фонд':
         info.funds = collectFunds($table);
