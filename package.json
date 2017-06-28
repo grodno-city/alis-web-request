@@ -12,7 +12,7 @@
     "lint": "eslint index.js",
     "prepublish": "babel --out-dir lib --copy-files src --ignore test/*",
     "update-query-mapping": "babel-node bin/update-query-mapping.js > queryMap.json",
-    "update-record-fixture": "babel-node src/test/scripts/update-record-fixture > src/test/fixtures/record.html"
+    "update-record-fixtures": "babel-node src/test/scripts/update-record-fixtures"
   },
   "dependencies": {
     "cheerio": "0.22.0",
