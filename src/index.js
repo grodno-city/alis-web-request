@@ -193,7 +193,7 @@ export function collectInfo(table) {
   return tags;
 }
 
-export function collectYears(table){
+export function collectYears(table) {
   const title = table.children().toArray()[0].children[1].children[0].data;
   if (title !== 'Год(комплект)') {
     return [];
@@ -210,19 +210,35 @@ export function collectYears(table){
 
 export function getRecordInfo($) {
   const info = {};
-  const firstTable = $('table').first();
-  info.tags = collectInfo(firstTable);
   info.belMarkId = $('span')[0].children[0].data;
-  const secondTable = $('table').first().next('table');
-  if (secondTable) {
-    // info.funds = collectFunds(secondTable);
-    info.years = collectYears(secondTable);
+  let table = $('table').first();
+  let count = 0;
+  while (count < $('table').length) {
+    let title;
+    if (table.children().toArray()[0].children[1]) {
+      title = table.children().toArray()[0].children[1].children[0].data;
+    } else title = table.children().toArray()[0].children[0].children[0].data;
+
+    switch (title) {
+      case 'Год(комплект)':
+        info.years = collectYears(table);
+        break;
+      case 'Ссылки на др. биб.записи':
+        info.references = collectReferences(table);
+        break;
+      case 'Название':
+        info.tags = collectInfo(table);
+        break;
+      case 'Фонд':
+        info.funds = collectFunds(table);
+        break;
+      default:
+
+    }
+    count += 1;
+    table = table.next('table');
   }
 
-  const thirdTable = $('table').first().next('table').next('table');
-  if (thirdTable) {
-    info.references = collectReferences(thirdTable);
-  }
   return info;
 }
 
