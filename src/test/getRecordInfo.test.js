@@ -16,7 +16,7 @@ describe('getRecordInfo', () => {
     const info = getRecordInfo($);
     info.id = 28392;
     expect(info).to.deep.equal({
-      belMarkId: 'ID= BY-HR0000-br28392',
+      belmarcId: 'ID= BY-HR0000-br28392',
       tags: [
         { tag: 'Каталожный номер', field: '84' },
         { tag: 'Основное заглавие', field: 'Знамя' },

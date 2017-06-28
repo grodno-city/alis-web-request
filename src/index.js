@@ -210,7 +210,7 @@ export function collectYears(table) {
 
 export function getRecordInfo($) {
   const info = {};
-  info.belMarkId = $('span')[0].children[0].data;
+  info.belmarcId = $('span')[0].children[0].data;
   let table = $('table').first();
   let count = 0;
   while (count < $('table').length) {
