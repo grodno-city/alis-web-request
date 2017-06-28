@@ -4,7 +4,7 @@ import { join } from 'path';
 import { expect } from 'chai';
 import { collectYears } from '../index';
 
-const record = fs.readFileSync(join(__dirname, 'fixtures/record.html'));
+const record = fs.readFileSync(join(__dirname, 'fixtures/recordWithYears.html'));
 
 describe('collectYears', () => {
   it('should be a function', () => {
@@ -22,7 +22,7 @@ describe('collectYears', () => {
     const secondTable = $('table').first().next('table');
     const funds = collectYears(secondTable);
     funds.forEach((el) => {
-      expect(el).to.be.a('string');
+      expect(el).to.be.a('number');
     });
   });
 });

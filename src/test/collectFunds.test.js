@@ -4,7 +4,7 @@ import { join } from 'path';
 import { expect } from 'chai';
 import { collectFunds } from '../index';
 
-const record = fs.readFileSync(join(__dirname, 'fixtures/record.html'));
+const record = fs.readFileSync(join(__dirname, 'fixtures/recordWithFunds.html'));
 
 describe('collectFunds', () => {
   it('should be a function', () => {
