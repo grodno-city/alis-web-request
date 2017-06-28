@@ -2,7 +2,6 @@ import querystring from 'querystring';
 import request from 'request';
 import cheerio from 'cheerio';
 import queryMap from './queryMap.json';
-import cheerioTableparser from 'cheerio-tableparser';
 
 export const recordTypes = queryMap.recordType;
 
@@ -171,7 +170,6 @@ export function collectFund(data) {
 }
 
 export function getRecordInfo($) {
-  cheerioTableparser($);
   const info = {};
   const firstTable = $('table').first().parsetable(false, false, true);
   for (let i = 0; i < firstTable[0].length; i++) {
