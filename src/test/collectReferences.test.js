@@ -25,10 +25,4 @@ describe('collectReferences', () => {
       expect(el).to.include.all.keys('tag', 'value');
     });
   });
-  it('should return empty array if no references', () => {
-    const $ = cheerio.load(record);
-    const thirdTable = $('table').first().next('table');
-    const references = collectReferences(thirdTable);
-    expect(references).to.be.an('array').that.is.empty;
-  });
 });
