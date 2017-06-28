@@ -142,10 +142,6 @@ export function getRecordsByQuery(initParams, callback) {
 }
 
 export function collectReferences(table) {
-  const title = table.children().toArray()[0].children[0].children[0].data;
-  if (title !== 'Ссылки на др. биб.записи') {
-    return [];
-  }
   const references = [];
   const data = table.children().toArray();
   data.shift();
@@ -160,10 +156,6 @@ export function collectReferences(table) {
 }
 
 export function collectFunds(table) {
-  const title = table.children().toArray()[0].children[1].children[0].data;
-  if (title !== 'Фонд') {
-    return [];
-  }
   const funds = [];
   const data = table.children().toArray();
   data.shift();
@@ -177,10 +169,6 @@ export function collectFunds(table) {
 }
 
 export function collectInfo(table) {
-  const title = table.children().toArray()[0].children[1].children[0].data;
-  if (title !== 'Название') {
-    return [];
-  }
   const tags = [];
   const data = table.children().toArray();
   data.shift();
@@ -194,10 +182,6 @@ export function collectInfo(table) {
 }
 
 export function collectYears(table) {
-  const title = table.children().toArray()[0].children[1].children[0].data;
-  if (title !== 'Год(комплект)') {
-    return [];
-  }
   const references = [];
   const data = table.children().toArray();
   data.shift();
@@ -211,33 +195,28 @@ export function collectYears(table) {
 export function getRecordInfo($) {
   const info = {};
   info.belmarcId = $('span')[0].children[0].data;
-  let table = $('table').first();
-  let count = 0;
-  while (count < $('table').length) {
-    let title;
-    if (table.children().toArray()[0].children[1]) {
-      title = table.children().toArray()[0].children[1].children[0].data;
-    } else title = table.children().toArray()[0].children[0].children[0].data;
+
+  $('table').each((i, table) => {
+    const $table = $(table);
+    const title = $('tr:nth-child(1) th:nth-child(1)', table).text();
 
     switch (title) {
       case 'Год(комплект)':
-        info.years = collectYears(table);
+        info.years = collectYears($table);
         break;
       case 'Ссылки на др. биб.записи':
-        info.references = collectReferences(table);
+        info.references = collectReferences($table);
         break;
       case 'Название':
-        info.tags = collectInfo(table);
+        info.tags = collectInfo($table);
         break;
       case 'Фонд':
-        info.funds = collectFunds(table);
+        info.funds = collectFunds($table);
         break;
       default:
 
     }
-    count += 1;
-    table = table.next('table');
-  }
+  });
 
   return info;
 }
