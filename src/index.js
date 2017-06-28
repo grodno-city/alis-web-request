@@ -142,38 +142,22 @@ export function getRecordsByQuery(initParams, callback) {
   });
 }
 
-export function fixUnIndexedString(data) {
-  const newData = data.map((colum) => {
-    return colum.map((el) => {
-      if (el !== undefined && el.endsWith(' .')) {
-        return el.slice(0, el.length - 2);
-      }
-      return el;
-    })
-  });
-  return newData;
-}
-
-export function collectUnknownField(data) {
-  if (!data[0].includes('')) return;
-  const unknown = [];
-  data[0].forEach((el, index) => {
-    if (el === '') {
-      unknown.push(data[1][index]);
-    }
-  });
-  return unknown;
-}
-
-export function collectTags(data) {
-  let tags = [];
-  if (data[0][0] === 'Ссылки на др. биб.записи') {
-    for (let j = 1; j < data[0].length; j += 1) {
-      const str = data[0][j].split('*');
-      tags = tags.concat(str);
-    }
+export function collectReferences(table) {
+  const title = table.children().toArray()[0].children[0].children[0].data;
+  if (title !== 'Ссылки на др. биб.записи') {
+    return [];
   }
-  return tags;
+  let references = [];
+  const data = table.children().toArray();
+  data.shift();
+  data.forEach((el) => {
+    const a = el.children[0].children[0];
+    references.push({
+      tag: a.attribs.onclick.match(/[0-9]+/)[0],
+      value: a.children[0].data,
+    });
+  });
+  return references;
 }
 
 export function collectFund(data) {
@@ -189,8 +173,7 @@ export function collectFund(data) {
 export function getRecordInfo($) {
   cheerioTableparser($);
   const info = {};
-  let firstTable = $('table').first().parsetable(false, false, true);
-  firstTable = fixUnIndexedString(firstTable);
+  const firstTable = $('table').first().parsetable(false, false, true);
   for (let i = 0; i < firstTable[0].length; i++) {
     if (firstTable[0][i] !== '') {
       if (firstTable[0][i] === 'ISBN') {
@@ -198,25 +181,19 @@ export function getRecordInfo($) {
       } else info[firstTable[0][i]] = firstTable[1][i];
     }
   }
-  const unknown = collectUnknownField(firstTable);
-  if (unknown !== undefined) info.unknown = unknown;
-
   const secondTable = $('table').first().next('table');
   if (secondTable) {
-    let second = secondTable.parsetable(false, false, true);
-    second = fixUnIndexedString(second);
+    const second = secondTable.parsetable(false, false, true);
     if (second[0][0] === 'Фонд') {
       info['Фонд'] = collectFund(second);
     } else {
-      info.tags = collectTags(second);
+      info.tags = collectReferences(second);
     }
   }
 
   const thirdTable = $('table').first().next('table').next('table');
   if (thirdTable) {
-    let tags = thirdTable.parsetable(false, false, true);
-    tags = fixUnIndexedString(tags);
-    info.tags = collectTags(tags);
+    info.tags = collectReferences(thirdTable);
   }
   delete info['Название'];
   return info;
