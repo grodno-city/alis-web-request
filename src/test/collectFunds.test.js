@@ -2,11 +2,11 @@ import cheerio from 'cheerio';
 import fs from 'fs';
 import { join } from 'path';
 import { expect } from 'chai';
-import { collectReferences } from '../index';
+import { collectFunds } from '../index';
 
 const record = fs.readFileSync(join(__dirname, 'fixtures/record.html'));
 
-describe('collectReferences', () => {
+describe('collectFunds', () => {
   it('should be a function', () => {
     expect(typeof collectReferences).to.equal('function');
   });
@@ -14,21 +14,21 @@ describe('collectReferences', () => {
   it('shoud return an array', () => {
     const $ = cheerio.load(record);
     const thirdTable = $('table').first().next('table').next('table');
-    const references = collectReferences(thirdTable);
-    expect(references).to.be.an('array');
+    const funds = collectFunds(thirdTable);
+    expect(funds).to.be.an('array');
   });
-  it('each arrays element shoud be { tag: Number, value: String }', () => {
+  it('each arrays element shoud be { name: String, count: Number }', () => {
     const $ = cheerio.load(record);
     const thirdTable = $('table').first().next('table').next('table');
-    const references = collectReferences(thirdTable);
-    references.forEach((el) => {
-      expect(el).to.include.all.keys('tag', 'value');
+    const funds = collectFunds(thirdTable);
+    funds.forEach((el) => {
+      expect(el).to.include.all.keys('name', 'count');
     });
   });
   it('should return empty array if no references', () => {
     const $ = cheerio.load(record);
     const thirdTable = $('table').first().next('table');
-    const references = collectReferences(thirdTable);
-    expect(references).to.be.an('array').that.is.empty;
+    const funds = collectFunds(thirdTable);
+    expect(funds).to.be.an('array').that.is.empty;
   });
 });
