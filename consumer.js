@@ -1,13 +1,11 @@
+import { getRecordByID } from './src/index';
 
-import { sendInitialQuery, getNumberedPageUrls, run, processItems, parsePage, getRecordsByQuery } from './index';
-
-
-const initParams = {
-  query: 1960,
+const options = {
+  id: 28392,
   alisEndpoint: 'http://86.57.174.45',
-  recordType: "Книги",
-  queryType: "Год издания",
 };
-getRecordsByQuery(initParams, (err, memo) => {
-  console.log('memo.length All: ', memo.length);
+getRecordByID(options.alisEndpoint, options.id, (err, record) => {
+  if (err) {
+    console.log(err.message);
+  } else console.log(record);
 });
