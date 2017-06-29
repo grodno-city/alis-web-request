@@ -192,7 +192,7 @@ export function collectYears(table) {
   return references;
 }
 
-function getTable($, name) {
+export function getTable($, name) {
   const nameToTitle = {
     years: 'Год(комплект)',
     references: 'Ссылки на др. биб.записи',
@@ -202,20 +202,24 @@ function getTable($, name) {
   const tablesIndex = $('table').map((i, table) => {
     const $table = $(table);
     const title = $('tr:nth-child(1) th:nth-child(1)', table).text();
-    
-    return [ title, $table ];
+    return { title, $table };
   });
-  
-  return tablesIndex.get().find(([ title ]) => title === nameToTitle[name]).$table;
+  const find = tablesIndex.get().find(el => el.title === nameToTitle[name]);
+  if (find) return find.$table;
+  return undefined;
 }
 
 export function getRecordInfo($) {
+  const years = getTable($, 'years');
+  const references = getTable($, 'references');
+  const fields = getTable($, 'fields');
+  const funds = getTable($, 'funds');
   return {
     belmarcId: $('span')[0].children[0].data.substr(4),
-    years: collectYears(getTable($, 'years')),
-    references: collectReferences(getTable($, 'references')),
-    fields: collectFields(getTable($, 'fields')),
-    funds: collectFunds(getTable($, 'funds')),
+    years: years ? collectYears(years) : [],
+    references: references ? collectReferences(references) : [],
+    fields: fields ? collectFields(fields) : [],
+    funds: funds ? collectFunds(funds) : [],
   };
 }
 
