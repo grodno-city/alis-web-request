@@ -50,6 +50,7 @@ describe('getRecordInfo', () => {
         { tag: 2, value: 'гл. ред. С.Чупринин ' },
         { tag: 2, value: 'учредитель: Труд. коллектив ред. журн. ' },
       ],
+      funds: [],
     });
   });
   it('shoud return an object with funds', () => {
@@ -80,6 +81,7 @@ describe('getRecordInfo', () => {
         { tag: 4, value: 'ЭСТЕТИКА ' },
         { tag: 4, value: 'прекрасное ' },
       ],
+      years: [],
     });
   });
 });

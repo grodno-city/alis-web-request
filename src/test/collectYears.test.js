@@ -2,7 +2,7 @@ import cheerio from 'cheerio';
 import fs from 'fs';
 import { join } from 'path';
 import { expect } from 'chai';
-import { collectYears } from '../index';
+import { collectYears, getTable } from '../index';
 
 const record = fs.readFileSync(join(__dirname, 'fixtures/recordWithYears.html'));
 
@@ -13,15 +13,15 @@ describe('collectYears', () => {
 
   it('shoud return an array', () => {
     const $ = cheerio.load(record);
-    const thirdTable = $('table').first().next('table');
-    const funds = collectYears(thirdTable);
-    expect(funds).to.be.an('array');
+    const yearsTable = getTable($, 'years');
+    const years = collectYears(yearsTable);
+    expect(years).to.be.an('array');
   });
   it('each arrays element shoud be { name: String, count: Number }', () => {
     const $ = cheerio.load(record);
-    const secondTable = $('table').first().next('table');
-    const funds = collectYears(secondTable);
-    funds.forEach((el) => {
+    const yearsTable = getTable($, 'years');
+    const years = collectYears(yearsTable);
+    years.forEach((el) => {
       expect(el).to.be.a('number');
     });
   });
