@@ -2,7 +2,6 @@ import querystring from 'querystring';
 import request from 'request';
 import cheerio from 'cheerio';
 import queryMap from './queryMap.json';
-import cheerioTableparser from'cheerio-tableparser';
 
 export const recordTypes = queryMap.recordType;
 
@@ -142,42 +141,86 @@ export function getRecordsByQuery(initParams, callback) {
   });
 }
 
+export function collectReferences(table) {
+  const references = [];
+  const data = table.children().toArray();
+  data.shift();
+  data.forEach((el) => {
+    const a = el.children[0].children[0];
+    references.push({
+      tag: Number(a.attribs.onclick.match(/[0-9]+/)[0]),
+      value: a.children[0].data,
+    });
+  });
+  return references;
+}
+
+export function collectFunds(table) {
+  const funds = [];
+  const data = table.children().toArray();
+  data.shift();
+  data.forEach((el) => {
+    funds.push({
+      name: el.children[0].children[0].children[0].data,
+      count: Number(el.children[1].children[0].data),
+    });
+  });
+  return funds;
+}
+
+export function collectFields(table) {
+  const fields = [];
+  const data = table.children().toArray();
+  data.shift();
+  data.forEach((el) => {
+    fields.push({
+      tag: el.children[0].children[0].children[0].data,
+      value: el.children[1].children[0].data,
+    });
+  });
+  return fields;
+}
+
+export function collectYears(table) {
+  const references = [];
+  const data = table.children().toArray();
+  data.shift();
+  data.forEach((el) => {
+    const a = el.children[0].children[0];
+    references.push(Number(a.children[0].data.substr(0, 4)));
+  });
+  return references;
+}
+
+export function getTable($, name) {
+  const nameToTitle = {
+    years: 'Год(комплект)',
+    references: 'Ссылки на др. биб.записи',
+    fields: 'Название',
+    funds: 'Фонд',
+  };
+  const tablesIndex = $('table').map((i, table) => {
+    const $table = $(table);
+    const title = $('tr:nth-child(1) th:nth-child(1)', table).text();
+    return { title, $table };
+  });
+  const find = tablesIndex.get().find(el => el.title === nameToTitle[name]);
+  if (find) return find.$table;
+  return undefined;
+}
+
 export function getRecordInfo($) {
-  cheerioTableparser($);
-  const data = $('table').parsetable(false, false, true);
-  const info = {};
-  info.unknown = [];
-  for (let i = 0; i < data[0].length; i++) {
-    if (data[0][i].endsWith(' .')) {
-      data[0][i] = data[0][i].slice(0, data[0][i].length - 2);
-    }
-    if (data[1][i] !== undefined) {
-      if (data[1][i].endsWith(' .')) {
-        data[1][i] = data[1][i].slice(0, data[1][i].length - 2);
-      }
-    }
-    if (data[0][i] === 'Фонд') info[data[0][i]] = {};
-    else if (data[0][i] === 'Ссылки на др. биб.записи') {
-      info.tags = [];
-      for (let j = i + 1; j < data[0].length; j++) {
-        let str = data[0][j].split('*');
-        info.tags = info.tags.concat(str);
-      }
-      break;
-    }
-    else if (data[0][i].match('фондир')) {
-      info['Фонд'][data[0][i]] = data[1][i];
-    }
-    else if (data[0][i] === 'ISBN') {
-      info[data[0][i]] = data[1][i].split(', ');
-    }
-    else if (data[0][i] === '') {
-      info.unknown.push(data[1][i]);
-    }
-    else info[data[0][i]] = data[1][i];
-  }
-  delete info['Название'];
-  return info;
+  const years = getTable($, 'years');
+  const references = getTable($, 'references');
+  const fields = getTable($, 'fields');
+  const funds = getTable($, 'funds');
+  return {
+    belmarcId: $('span')[0].children[0].data.substr(4),
+    years: years ? collectYears(years) : [],
+    references: references ? collectReferences(references) : [],
+    fields: fields ? collectFields(fields) : [],
+    funds: funds ? collectFunds(funds) : [],
+  };
 }
 
 export function getRecordByID(alisEndpoint, id, callback) {
@@ -185,7 +228,7 @@ export function getRecordByID(alisEndpoint, id, callback) {
   const INITIAL_URL = `${alisEndpoint}${firstPageUrl}`;
   getPage({ url: INITIAL_URL }, (err, body) => {
     if (err) return callback(err);
-    if (body.match('Undefined variable')) return callback(new Error('Record not found'))
+    if (body.match('Undefined variable')) return callback(new Error('Record not found'));
     const $ = parsePage(body);
     const info = getRecordInfo($);
     info.id = id;
