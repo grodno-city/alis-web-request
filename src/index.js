@@ -192,33 +192,31 @@ export function collectYears(table) {
   return references;
 }
 
-export function getRecordInfo($) {
-  const info = {};
-  info.belmarcId = $('span')[0].children[0].data.substr(4);
-
-  $('table').each((i, table) => {
+function getTable($, name) {
+  const nameToTitle = {
+    years: 'Год(комплект)',
+    references: 'Ссылки на др. биб.записи',
+    fields: 'Название',
+    funds: 'Фонд',
+  };
+  const tablesIndex = $('table').map((i, table) => {
     const $table = $(table);
     const title = $('tr:nth-child(1) th:nth-child(1)', table).text();
-
-    switch (title) {
-      case 'Год(комплект)':
-        info.years = collectYears($table);
-        break;
-      case 'Ссылки на др. биб.записи':
-        info.references = collectReferences($table);
-        break;
-      case 'Название':
-        info.fields = collectFields($table);
-        break;
-      case 'Фонд':
-        info.funds = collectFunds($table);
-        break;
-      default:
-
-    }
+    
+    return [ title, $table ];
   });
+  
+  return tablesIndex.get().find(([ title ]) => title === nameToTitle[name]).$table;
+}
 
-  return info;
+export function getRecordInfo($) {
+  return {
+    belmarcId: $('span')[0].children[0].data.substr(4),
+    years: collectYears(getTable($, 'years')),
+    references: collectReferences(getTable($, 'references')),
+    fields: collectFields(getTable($, 'fields')),
+    funds: collectFunds(getTable($, 'funds')),
+  };
 }
 
 export function getRecordByID(alisEndpoint, id, callback) {
