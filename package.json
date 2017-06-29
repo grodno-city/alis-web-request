@@ -6,7 +6,7 @@
   "author": "Vadim Demyanchik <vadim.demyanchik@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --exec babel-node -- ./consumer.js",
+    "start": "nodemon --exec babel-node -- ./example.js",
     "test": "mocha --compilers js:babel-core/register ./src/test/*.test.js",
     "update-test-fixtures": "babel-node --presets es2015 ./test/scripts/update-results-fixtures.js",
     "lint": "eslint index.js",
