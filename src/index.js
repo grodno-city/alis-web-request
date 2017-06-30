@@ -174,8 +174,8 @@ export function collectFields(table) {
   data.shift();
   data.forEach((el) => {
     fields.push({
-      tag: el.children[0].children[0].children[0].data,
-      value: el.children[1].children[0].data,
+      tag: el.children[0].children[0].children[0] ? el.children[0].children[0].children[0].data : '',
+      value: el.children[1].children[0] ? el.children[1].children[0].data : '',
     });
   });
   return fields;
