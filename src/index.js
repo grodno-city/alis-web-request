@@ -168,16 +168,16 @@ export function collectFunds(table) {
   return funds;
 }
 
-export function collectFields(table) {
-  const fields = [];
-  const data = table.children().toArray();
-  data.shift();
-  data.forEach((el) => {
-    fields.push({
-      tag: el.children[0].children[0].children[0].data,
-      value: el.children[1].children[0].data,
-    });
-  });
+export function collectFields($, table) {
+  const fields = table.find('tr')
+    .filter((i, tr) => {
+      return $('tr:nth-child(1) th:nth-child(1)', tr).text() !== 'Название';
+    }).map((i, tr) => {
+      return {
+        tag: $('td:nth-child(1)', tr).text(),
+        value: $('td:nth-child(2)', tr).text(),
+      };
+    }).get();
   return fields;
 }
 
@@ -218,7 +218,7 @@ export function getRecordInfo($) {
     belmarcId: $('span')[0].children[0].data.substr(4),
     years: years ? collectYears(years) : [],
     references: references ? collectReferences(references) : [],
-    fields: fields ? collectFields(fields) : [],
+    fields: fields ? collectFields($, fields) : [],
     funds: funds ? collectFunds(funds) : [],
   };
 }
