@@ -18,6 +18,7 @@ export function sendInitialQuery(params, callback) {
   if (!params.recordType) {
     return process.nextTick(callback, new Error('recordType is not provided'));
   }
+
   const j = request.jar();
   const alisEndpoint = `${params.alisEndpoint}`;
   const qs = querystring.stringify({
@@ -29,11 +30,11 @@ export function sendInitialQuery(params, callback) {
   const firstPageUrl = `/alis/EK/do_searh.php?${qs}`;
   const INITIAL_URL = `${alisEndpoint}${firstPageUrl}`;
 
-  request({ url: INITIAL_URL, jar: j }, (err, response, body) => {
+  return request({ url: INITIAL_URL, jar: j }, (err, response, body) => {
     if (err) {
       return callback(err);
     }
-    callback(null, { page: body, jar: j });
+    return callback(null, { page: body, jar: j });
   });
 }
 
@@ -42,7 +43,7 @@ export function getPage(options, callback) {
     if (err) {
       return callback(err);
     }
-    callback(null, body);
+    return callback(null, body);
   });
 }
 
@@ -58,12 +59,10 @@ export function getTotal($) {
 }
 
 export function getItems($) {
-  const items = $('.article').map(function (i, el) {
-    return {
-      id: $(el).attr('id'),
-      title: $(el).text().trim(),
-    };
-  }).toArray();
+  const items = $('.article').map((i, el) => ({
+    id: $(el).attr('id'),
+    title: $(el).text().trim(),
+  })).toArray();
   return items;
 }
 
@@ -83,7 +82,7 @@ export function processItems(memo, q, options, callback) {
     return process.nextTick(callback, new Error('options is not provided'));
   }
 
-  getPage({ url: options.url, jar: options.jar }, (err, body) => {
+  return getPage({ url: options.url, jar: options.jar }, (err, body) => {
     if (err) return callback(err);
     const $ = parsePage(body);
 
@@ -97,7 +96,7 @@ export function processItems(memo, q, options, callback) {
     items.forEach((item) => {
       memo.push(item);
     });
-    callback(null, memo, remainingQueue);
+    return callback(null, memo, remainingQueue);
   });
 }
 
@@ -109,11 +108,11 @@ export function run(fn, q, memo, options, callback) {
   if (q[0] === 'undefined') {
     return callback(null, memo);
   }
-  fn(memo, q, { url: `${options.alisEndpoint}/alis/EK/${q[0]}`, jar: options.jar }, (err, nextMemo, nextQ) => {
+  return fn(memo, q, { url: `${options.alisEndpoint}/alis/EK/${q[0]}`, jar: options.jar }, (err, nextMemo, nextQ) => {
     if (err) {
       return callback(err);
     }
-    run(fn, nextQ, memo, options, callback);
+    return run(fn, nextQ, memo, options, callback);
   });
 }
 
@@ -126,17 +125,20 @@ export function getRecordsByQuery(initParams, callback) {
       alisEndpoint: initParams.alisEndpoint,
       jar: res.jar,
     };
+
     if (res.page.match('Не результативный поиск')) {
       return callback(new Error('no match'));
     }
+
     const $ = parsePage(res.page);
     const firstNumberedPageUrls = getNumberedPageUrls($);
     const remainingQueue = firstNumberedPageUrls;
-    run(processItems, remainingQueue, [], options, (runErr, memo) => {
+
+    return run(processItems, remainingQueue, [], options, (runErr, memo) => {
       if (err) {
         return callback(err);
       }
-      callback(null, memo);
+      return callback(null, memo);
     });
   });
 }
@@ -170,14 +172,12 @@ export function collectFunds(table) {
 
 export function collectFields($, table) {
   const fields = table.find('tr')
-    .filter((i, tr) => {
-      return $('tr:nth-child(1) th:nth-child(1)', tr).text() !== 'Название';
-    }).map((i, tr) => {
-      return {
-        tag: $('td:nth-child(1)', tr).text(),
-        value: $('td:nth-child(2)', tr).text(),
-      };
-    }).get();
+    .filter((i, tr) =>
+      $('tr:nth-child(1) th:nth-child(1)', tr).text() !== 'Название')
+    .map((i, tr) => ({
+      tag: $('td:nth-child(1)', tr).text(),
+      value: $('td:nth-child(2)', tr).text(),
+    })).get();
   return fields;
 }
 
@@ -214,6 +214,7 @@ export function getRecordInfo($) {
   const references = getTable($, 'references');
   const fields = getTable($, 'fields');
   const funds = getTable($, 'funds');
+
   return {
     belmarcId: $('span')[0].children[0].data.substr(4),
     years: years ? collectYears(years) : [],
@@ -226,6 +227,7 @@ export function getRecordInfo($) {
 export function getRecordByID(alisEndpoint, id, callback) {
   const firstPageUrl = `/alis/EK/do_view.php?id=${id}`;
   const INITIAL_URL = `${alisEndpoint}${firstPageUrl}`;
+
   getPage({ url: INITIAL_URL }, (err, body) => {
     if (err) return callback(err);
     if (body.match('Undefined variable')) return callback(new Error('Record not found'));

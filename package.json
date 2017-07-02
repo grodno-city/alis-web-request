@@ -9,7 +9,7 @@
     "start": "nodemon --exec babel-node -- ./example.js",
     "test": "mocha --compilers js:babel-core/register ./src/test/*.test.js",
     "update-test-fixtures": "babel-node --presets es2015 ./test/scripts/update-results-fixtures.js",
-    "lint": "eslint index.js",
+    "lint": "eslint ./src/index.js",
     "prepublish": "babel --out-dir lib --copy-files src --ignore test/*",
     "update-query-mapping": "babel-node bin/update-query-mapping.js > queryMap.json",
     "update-record-fixtures": "babel-node src/test/scripts/update-record-fixtures"
