@@ -9,7 +9,7 @@ export function sendInitialQuery(params, callback) {
   if (!params.alisEndpoint) {
     return process.nextTick(callback, new Error('alisEndpoint is not provided'));
   }
-  if (!params.query) {
+  if (!params.query && params.query !== '') {
     return process.nextTick(callback, new Error('query is not provided'));
   }
   if (!params.queryType) {
@@ -41,6 +41,9 @@ export function getPage(options, callback) {
   request({ url: options.url, jar: options.jar }, (err, response, body) => {
     if (err) {
       return callback(err);
+    }
+    if (response.body.match('Ошибка')) {
+      return callback(new Error('alert Ошибка'));
     }
     callback(null, body);
   });
@@ -133,8 +136,8 @@ export function getRecordsByQuery(initParams, callback) {
     const firstNumberedPageUrls = getNumberedPageUrls($);
     const remainingQueue = firstNumberedPageUrls;
     run(processItems, remainingQueue, [], options, (runErr, memo) => {
-      if (err) {
-        return callback(err);
+      if (runErr) {
+        return callback(runErr);
       }
       callback(null, memo);
     });
