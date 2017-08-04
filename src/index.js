@@ -133,8 +133,8 @@ export function getRecordsByQuery(initParams, callback) {
     const firstNumberedPageUrls = getNumberedPageUrls($);
     const remainingQueue = firstNumberedPageUrls;
     run(processItems, remainingQueue, [], options, (runErr, memo) => {
-      if (err) {
-        return callback(err);
+      if (runErr) {
+        return callback(runErr);
       }
       callback(null, memo);
     });
