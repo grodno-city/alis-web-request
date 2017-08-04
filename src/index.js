@@ -42,6 +42,9 @@ export function getPage(options, callback) {
     if (err) {
       return callback(err);
     }
+    if (response.body.match('Ошибка')) {
+      return callback(new Error('alert Ошибка'));
+    }
     callback(null, body);
   });
 }
