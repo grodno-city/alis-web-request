@@ -9,7 +9,7 @@ export function sendInitialQuery(params, callback) {
   if (!params.alisEndpoint) {
     return process.nextTick(callback, new Error('alisEndpoint is not provided'));
   }
-  if (!params.query) {
+  if (!params.query && params.query !== '') {
     return process.nextTick(callback, new Error('query is not provided'));
   }
   if (!params.queryType) {
