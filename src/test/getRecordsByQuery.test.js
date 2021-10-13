@@ -18,7 +18,7 @@ describe('getRecordsByQuery', () => {
 
     nock(alisEndpoint)
       .get(firstPageUrl)
-      .reply(200, '<html> Не результативный поиск</html>', {
+      .reply(200, '<html>...<title>Не результативный поиск</title>...</html>', {
         'Set-Cookie': 'sessionalis=ra2lme8ap38rd2dt8o2dqo7vs1',
       });
     getRecordsByQuery(initParams, (err, memo) => {
