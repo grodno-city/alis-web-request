@@ -1,7 +1,10 @@
 import querystring from 'querystring';
 import request from 'request';
 import cheerio from 'cheerio';
+import debug from 'debug';
 import queryMap from './queryMap.json';
+
+const log = debug('alis-web-request');
 
 export const recordTypes = queryMap.recordType;
 
@@ -38,6 +41,8 @@ export function sendInitialQuery(params, callback) {
 }
 
 export function getPage(options, callback) {
+  log(`getPage: ${options.url}`);
+
   request({ url: options.url, jar: options.jar }, (err, response, body) => {
     if (err) {
       return callback(err);
