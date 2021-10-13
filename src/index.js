@@ -42,15 +42,36 @@ export function sendInitialQuery(params, callback) {
   });
 }
 
-export function getPage(options, callback) {
-  log(`getPage: ${options.url}`);
+const cacheManager = require('cache-manager');
+const fsHashStore = require('cache-manager-fs-hash');
 
-  request({ url: options.url, jar: options.jar }, (err, response, body) => {
-    if (err) {
-      return callback(err);
-    }
-    callback(null, body);
-  });
+const CACHE_DIR = `${__dirname}/../.cache`;
+
+const pageCache = cacheManager.caching({
+  store: fsHashStore,
+  options: {
+    ttl: 60 * 60 * 24 /* 1 day in seconds */,
+    maxsize: 1000 * 1000 * 1000 /* max size in bytes on disk */,
+    path: `${CACHE_DIR}/pages`,
+    subdirs: true,
+  },
+});
+
+export function getPage(options, callback) {
+  const { url, jar, initParams } = options;
+
+  log(`getPage: ${url}`);
+
+  const cacheKey = JSON.stringify({ url, ...initParams });
+
+  pageCache.wrap(cacheKey, (cacheCallback) => {
+    request({ url, jar }, (err, response, body) => {
+      if (err) {
+        return cacheCallback(err);
+      }
+      cacheCallback(null, body);
+    });
+  }, {}, callback);
 }
 
 export function getNextPageUrl($) {
@@ -90,7 +111,7 @@ export function processItems(memo, q, options, callback) {
     return process.nextTick(callback, new Error('options is not provided'));
   }
 
-  getPage({ url: options.url, jar: options.jar }, (err, body) => {
+  getPage(options, (err, body) => {
     if (err) return callback(err);
     const $ = parsePage(body);
 
@@ -116,7 +137,7 @@ export function run(fn, q, memo, options, callback) {
   if (q[0] === 'undefined') {
     return callback(null, memo);
   }
-  fn(memo, q, { url: `${options.alisEndpoint}/alis/EK/${q[0]}`, jar: options.jar }, (err, nextMemo, nextQ) => {
+  fn(memo, q, { url: `${options.alisEndpoint}/alis/EK/${q[0]}`, ...options }, (err, nextMemo, nextQ) => {
     if (err) {
       return callback(err);
     }
@@ -132,6 +153,7 @@ export function getRecordsByQuery(initParams, callback) {
     const options = {
       alisEndpoint: initParams.alisEndpoint,
       jar: res.jar,
+      initParams,
     };
     if (res.page.match('<title>Не результативный поиск</title>')) {
       return callback(new Error('no match'));
