@@ -14,7 +14,7 @@ describe('getRecordsByQuery', () => {
       queryType: 'Год издания',
     };
     const alisEndpoint = 'http://86.57.174.45';
-    const firstPageUrl = '/alis/EK/do_searh.php?radiodate=simple&valueINP=wrong%2520query&tema=1&tag=6';
+    const firstPageUrl = '/alis/EK/do_searh.php?radiodate=simple&valueINP=wrong%20query&tema=1&tag=6';
 
     nock(alisEndpoint)
       .get(firstPageUrl)

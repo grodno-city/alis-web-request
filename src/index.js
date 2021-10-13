@@ -25,12 +25,14 @@ export function sendInitialQuery(params, callback) {
   const alisEndpoint = `${params.alisEndpoint}`;
   const qs = querystring.stringify({
     radiodate: 'simple',
-    valueINP: encodeURIComponent(params.query),
+    valueINP: params.query,
     tema: queryMap.recordType[params.recordType],
     tag: queryMap.queryType[params.queryType],
   });
   const firstPageUrl = `/alis/EK/do_searh.php?${qs}`;
   const INITIAL_URL = `${alisEndpoint}${firstPageUrl}`;
+
+  log(`sendInitialQuery: ${INITIAL_URL}`);
 
   request({ url: INITIAL_URL, jar: j }, (err, response, body) => {
     if (err) {
