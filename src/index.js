@@ -88,7 +88,7 @@ export function getTotal($) {
 export function getItems($) {
   const items = $('.article').map(function (i, el) {
     return {
-      id: $(el).attr('id'),
+      id: $(el).attr('id').replace(/^H/, ''),
       title: $(el).text().trim(),
     };
   }).toArray();
@@ -96,6 +96,13 @@ export function getItems($) {
 }
 
 export function getNumberedPageUrls($) {
+  // `fcheck` гэта лічба першай нумарованай старонкі, усяго іх будзе паказана дзевяць.
+  //
+  // `ccheck`, `crow`, `frow` не маюць дзеянне, але бяз іх з'яўляецца Notice.
+  // Notice: Undefined index: ccheck in E:\ALIS\pls\alis\EK\do_other.php on line 42
+  // Яны задаюцца аўтаматычна у нумар старонкі, і першы нумар рэзультату.
+  //
+  // `action` гэта нумар старонкі для паказа.
   const pageLinks = $('a[href^=\'do_other\']');
   const relativePageUrls = $(pageLinks).map((i, link) => $(link).attr('href').replace(/\r|\n/g, '')).toArray();
   return relativePageUrls;
