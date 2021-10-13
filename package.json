@@ -15,6 +15,7 @@
     "update-record-fixtures": "babel-node src/test/scripts/update-record-fixtures"
   },
   "dependencies": {
+    "bluebird": "^3.7.2",
     "cheerio": "0.22.0",
     "debug": "^4.3.2",
     "request": "2.81.0"
