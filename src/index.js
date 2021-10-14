@@ -62,6 +62,7 @@ export function getPage(options, callback) {
 
   log(`getPage: ${url}`);
 
+  // TODO sort initParams entries to allow cache reuse on different props order
   const cacheKey = JSON.stringify({ url, ...initParams });
 
   pageCache.wrap(cacheKey, (cacheCallback) => {
