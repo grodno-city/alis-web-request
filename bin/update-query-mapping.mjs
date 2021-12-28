@@ -1,5 +1,6 @@
 import request from 'request';
 import cheerio from 'cheerio';
+import _ from 'lodash';
 
 function getTypes($, type) {
   const obj = {};
@@ -7,8 +8,13 @@ function getTypes($, type) {
     const str = $(el).text();
     obj[str] = $(el).attr('value');
   });
-  return obj;
+
+  const [allOption, ...options] = Object.entries(obj);
+  const sorted = _.sortBy(options.map(([k,v]) => [k, Number(v)]), [([,v]) => v]);
+
+  return Object.fromEntries([allOption, ...sorted]);
 }
+
 // http://86.57.174.45/pls/alis/StartEK/index.php
 request({ url: 'http://86.57.174.45/pls/alis/EK/simple.php' }, (err, res, body) => {
   const $ = cheerio.load(body);
