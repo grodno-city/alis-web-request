@@ -1,10 +1,9 @@
 import cheerio from 'cheerio';
-import fs from 'fs';
 import { expect } from 'chai';
-import { join } from 'path';
-import { getNumberedPageUrls } from '../index';
+import { readFixture } from './fixtures.mjs';
+import { getNumberedPageUrls } from '../index.mjs';
 
-const longResultsHtml = fs.readFileSync(join(__dirname, 'fixtures/long-results.html'));
+const longResultsHtml = await readFixture('long-results');
 
 describe('getNumberedPageUrls', () => {
   it('should be a function', () => {

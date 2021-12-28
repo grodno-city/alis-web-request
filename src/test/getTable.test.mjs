@@ -1,10 +1,9 @@
 import cheerio from 'cheerio';
-import fs from 'fs';
-import { join } from 'path';
 import { expect } from 'chai';
-import { getTable } from '../index';
+import { readFixture } from './fixtures.mjs';
+import { getTable } from '../index.mjs';
 
-const record = fs.readFileSync(join(__dirname, 'fixtures/recordWithYears.html'));
+const record = await readFixture('recordWithYears');
 
 describe('getTable', () => {
   it('should be a function', () => {

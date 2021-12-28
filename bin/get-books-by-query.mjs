@@ -1,6 +1,6 @@
+/* eslint-disable no-console */
 // DEBUG=alis-web-request yarn babel-node bin/get-books-by-query.js
-import { promisify } from 'bluebird';
-import { getRecordsByQuery as getRecordsByQueryCallback } from '../src/index';
+import Query from '../src/Query.mjs';
 
 const options = {
   // Электронны каталог https://grodnolib.by/
@@ -10,14 +10,13 @@ const options = {
   queryType: 'Издательство',
 };
 
-const getRecordsByQuery = promisify(getRecordsByQueryCallback);
-
-// TODO
 const main = async () => {
   try {
-    const records = await getRecordsByQuery(options);
+    const query = new Query(options);
+    const searchResultsPage = await query.send();
+    const items = await searchResultsPage.getItems();
 
-    console.log(records);
+    console.log({ total: searchResultsPage.getResultsTotal(), items });
   } catch (err) {
     if (err.message === 'no match') {
       console.log({

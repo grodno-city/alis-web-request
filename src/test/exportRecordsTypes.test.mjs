@@ -1,4 +1,4 @@
-import { recordTypes } from '../index';
+import { recordTypes } from '../index.mjs';
 import { expect } from 'chai';
 
 describe('export recordTypes', () => {

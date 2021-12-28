@@ -1,13 +1,12 @@
 import cheerio from 'cheerio';
-import fs from 'fs';
-import { join } from 'path';
 import { expect } from 'chai';
-import { getTotal } from '../index';
+import { readFixture } from './fixtures.mjs';
+import { getTotal } from '../index.mjs';
 
-const shortResultsHtml = fs.readFileSync(join(__dirname, 'fixtures/short-results.html'));
-const longResultsHtml = fs.readFileSync(join(__dirname, 'fixtures/long-results.html'));
+const shortResultsHtml = await readFixture('short-results');
+const longResultsHtml = await readFixture('long-results');
 
-describe('getTotalResult', () => {
+describe('getTotal', () => {
   it('should be a function', () => {
     expect(typeof getTotal).to.equal('function');
   });

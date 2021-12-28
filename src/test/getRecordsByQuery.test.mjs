@@ -1,12 +1,12 @@
 import nock from 'nock';
-import { expect } from 'chai';
-import { getRecordsByQuery } from '../index';
+import chai, { expect } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import Query from '../Query.mjs';
 
-describe('getRecordsByQuery', () => {
-  it('should be a function', () => {
-    expect(typeof getRecordsByQuery).to.equal('function');
-  });
-  it('return error if no results', (done) => {
+chai.use(chaiAsPromised);
+
+describe('Query', () => {
+  it('should error if no results', async () => {
     const initParams = {
       query: 'wrong query',
       alisEndpoint: 'http://86.57.174.45',
@@ -21,9 +21,9 @@ describe('getRecordsByQuery', () => {
       .reply(200, '<html>...<title>Не результативный поиск</title>...</html>', {
         'Set-Cookie': 'sessionalis=ra2lme8ap38rd2dt8o2dqo7vs1',
       });
-    getRecordsByQuery(initParams, (err, memo) => {
-      expect(err.message).to.equal('no match');
-      done();
-    });
+
+    const query = new Query(initParams);
+
+    expect(query.send()).to.eventually.throw(Error, 'no match');
   });
 });

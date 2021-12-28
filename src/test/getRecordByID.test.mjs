@@ -1,6 +1,6 @@
 import nock from 'nock';
 import { expect } from 'chai';
-import { getRecordByID } from '../index';
+import { getRecordByID } from '../index.mjs';
 
 describe('getRecordByID', () => {
   it('should be a function', () => {

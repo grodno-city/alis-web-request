@@ -2,8 +2,11 @@ import querystring from 'querystring';
 import request from 'request';
 import cheerio from 'cheerio';
 import debug from 'debug';
-import queryMap from './queryMap.json';
+import { readFile } from 'fs/promises';
+import cacheManager from 'cache-manager';
+import fsHashStore from 'cache-manager-fs-hash';
 
+const queryMap = JSON.parse(await readFile(new URL('./queryMap.json', import.meta.url), { encoding: 'utf-8' }));
 const log = debug('alis-web-request');
 
 export const recordTypes = queryMap.recordType;
@@ -42,50 +45,50 @@ export function sendInitialQuery(params, callback) {
   });
 }
 
-const cacheManager = require('cache-manager');
-const fsHashStore = require('cache-manager-fs-hash');
-
-const CACHE_DIR = `${__dirname}/../.cache`;
+const CACHE_DIR = new URL('../.cache', import.meta.url);
 
 const pageCache = cacheManager.caching({
   store: fsHashStore,
   options: {
     ttl: 60 * 60 * 24 /* 1 day in seconds */,
     maxsize: 1000 * 1000 * 1000 /* max size in bytes on disk */,
-    path: `${CACHE_DIR}/pages`,
+    path: `${CACHE_DIR.pathname}/pages`,
     subdirs: true,
   },
 });
 
 export function getPage(options, callback) {
-  const { url, jar, initParams } = options;
+  const { url, jar, initParams, noCache = false } = options;
 
   log(`getPage: ${url}`);
 
   // TODO sort initParams entries to allow cache reuse on different props order
   const cacheKey = JSON.stringify({ url, ...initParams });
-
-  pageCache.wrap(cacheKey, (cacheCallback) => {
+  const doRequest = (cacheCallback) => {
     request({ url, jar }, (err, response, body) => {
       if (err) {
         return cacheCallback(err);
       }
       cacheCallback(null, body);
     });
-  }, {}, callback);
-}
+  };
 
-export function getNextPageUrl($) {
-  const pageLink = $('#Agt');
-  const pageUrl = $(pageLink).attr('href');
-  return pageUrl;
+  if (noCache) {
+    doRequest(callback);
+  } else {
+    pageCache.wrap(cacheKey, doRequest, {}, callback);
+  }
 }
 
 export function getTotal($) {
-  const total = $('.listbzstat').first().text().match(/\d+(?=\sзап\.)/)[0];
-  return total;
+  return Number($('.listbzstat').first().text().match(/\d+(?=\sзап\.)/)[0]);
 }
 
+/**
+ *
+ * @param {cheerio.Cheerio} $
+ * @returns {{ id: string, title: string }[]}
+ */
 export function getItems($) {
   const items = $('.article').map(function (i, el) {
     return {
@@ -109,73 +112,15 @@ export function getNumberedPageUrls($) {
   return relativePageUrls;
 }
 
+/**
+ * Parses page and gives cheerio wrapper
+ *
+ * @param {string} body HTML
+ * @returns cheerio object
+ */
 export function parsePage(body) {
   const $ = cheerio.load(body);
   return $;
-}
-
-export function processItems(memo, q, options, callback) {
-  if (!options) {
-    return process.nextTick(callback, new Error('options is not provided'));
-  }
-
-  getPage(options, (err, body) => {
-    if (err) return callback(err);
-    const $ = parsePage(body);
-
-    const items = getItems($);
-
-    const nextPageUrl = getNextPageUrl($);
-    const remainingQueue = q.slice(1);
-    if (q.length === 1) {
-      remainingQueue.push(`${nextPageUrl}`);
-    }
-    items.forEach((item) => {
-      memo.push(item);
-    });
-    callback(null, memo, remainingQueue);
-  });
-}
-
-export function run(fn, q, memo, options, callback) {
-  if (!q) {
-    return new Error('q is not provided');
-  }
-
-  if (q[0] === 'undefined') {
-    return callback(null, memo);
-  }
-  fn(memo, q, { url: `${options.alisEndpoint}/alis/EK/${q[0]}`, ...options }, (err, nextMemo, nextQ) => {
-    if (err) {
-      return callback(err);
-    }
-    run(fn, nextQ, memo, options, callback);
-  });
-}
-
-export function getRecordsByQuery(initParams, callback) {
-  sendInitialQuery(initParams, (err, res) => {
-    if (err) {
-      return callback(err);
-    }
-    const options = {
-      alisEndpoint: initParams.alisEndpoint,
-      jar: res.jar,
-      initParams,
-    };
-    if (res.page.match('<title>Не результативный поиск</title>')) {
-      return callback(new Error('no match'));
-    }
-    const $ = parsePage(res.page);
-    const firstNumberedPageUrls = getNumberedPageUrls($);
-    const remainingQueue = firstNumberedPageUrls;
-    run(processItems, remainingQueue, [], options, (runErr, memo) => {
-      if (err) {
-        return callback(err);
-      }
-      callback(null, memo);
-    });
-  });
 }
 
 export function collectReferences(table) {
