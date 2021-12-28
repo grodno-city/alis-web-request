@@ -125,7 +125,7 @@ export function parsePage(body) {
 
 export function collectReferences(table) {
   const references = [];
-  const data = table.children().toArray();
+  const data = table.find('tr').toArray();
   data.shift();
   data.forEach((el) => {
     const a = el.children[0].children[0];
@@ -139,7 +139,7 @@ export function collectReferences(table) {
 
 export function collectFunds(table) {
   const funds = [];
-  const data = table.children().toArray();
+  const data = table.find('tr').toArray();
   data.shift();
   data.forEach((el) => {
     funds.push({
@@ -163,9 +163,14 @@ export function collectFields($, table) {
   return fields;
 }
 
+/**
+ *
+ * @param {cheerio.Cheerio} table
+ * @returns
+ */
 export function collectYears(table) {
   const references = [];
-  const data = table.children().toArray();
+  const data = table.find('tr').toArray();
   data.shift();
   data.forEach((el) => {
     const a = el.children[0].children[0];
@@ -174,6 +179,12 @@ export function collectYears(table) {
   return references;
 }
 
+/**
+ *
+ * @param {cheerio.Cheerio} $
+ * @param {string} name
+ * @returns
+ */
 export function getTable($, name) {
   const nameToTitle = {
     years: 'Год(комплект)',
@@ -191,6 +202,11 @@ export function getTable($, name) {
   return undefined;
 }
 
+/**
+ *
+ * @param {cheerio.Cheerio} $
+ * @returns
+ */
 export function getRecordInfo($) {
   const years = getTable($, 'years');
   const references = getTable($, 'references');

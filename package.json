@@ -17,7 +17,7 @@
     "bluebird": "^3.7.2",
     "cache-manager": "^3.4.4",
     "cache-manager-fs-hash": "^1.0.0",
-    "cheerio": "0.22.0",
+    "cheerio": "^1.0.0-rc.10",
     "debug": "^4.3.2",
     "lodash": "^4.17.21",
     "request": "^2.88.2"
