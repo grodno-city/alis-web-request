@@ -11,7 +11,7 @@
     "lint": "eslint index.js",
     "update-query-mapping": "node bin/update-query-mapping.mjs > src/queryMap.json",
     "get-books-by-query": "node bin/get-books-by-query.mjs",
-    "update-record-fixtures": "node src/test/scripts/update-record-fixtures"
+    "update-record-fixtures": "node src/test/scripts/update-record-fixtures.mjs"
   },
   "dependencies": {
     "bluebird": "^3.7.2",
